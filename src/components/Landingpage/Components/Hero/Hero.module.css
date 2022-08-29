@@ -1,0 +1,133 @@
+.hero {
+    /* position: relative; */
+}
+
+.heroContent {
+    display: flex;
+    justify-content: center;
+    padding-top: 12rem;
+    text-align: center;
+    /* background-color: green; */
+}
+
+.title,.titleSub{
+    line-height: 1;
+
+}
+
+.titleSub {
+    display: block;
+    width: 85%;
+    max-width: 700px;
+    margin: auto;
+}
+
+.subtitle {
+    line-height: 1.7;
+}
+
+.categories {
+    /* background-color: rebeccapurple; */
+    max-width: 6rem;
+    /* height: 4rem; */
+    margin-left: 3rem;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: baseline;
+    text-align: center;
+}
+
+.categoryImage {
+    height: 5rem;
+    transition: all .5s;
+}
+
+.categories:hover .categoryImage {
+    transform: scale(1.2);
+}
+
+.image {
+    height: 100%;
+}
+
+.categories:first-child {
+    margin: 0;
+}
+
+.categoryName {
+    margin-top: 1rem;
+    text-transform: uppercase;
+    /* margin-left: 3rem; */
+    font-size: .85rem;
+    text-align: center;
+}
+
+
+.btnPrimary,
+.btnSecondary {
+    padding: 1rem 0 !important;
+    border-radius: 5px !important;
+}
+
+.btnPrimary {
+    background-color: rgb(242, 101, 82) !important;
+    box-shadow: 0px 0px 5px -1px rgb(242, 101, 82) !important;
+    color: #fff !important;
+}
+
+.btnPrimary:hover {
+    background-color: rgb(248, 118, 101) !important;
+}
+
+.btnSecondary {
+    background-color: rgb(40, 121, 255) !important;
+    box-shadow: 0px 0px 5px -1px rgb(40, 121, 255) !important;
+    color: #fff !important;
+}
+
+.btnSecondary:hover {
+    background-color: rgb(46, 192, 221) !important;
+}
+
+.paymentLogo {
+    margin-left: 1rem;
+}
+
+.rounds {
+    position: absolute;
+    z-index: 1;
+    top: 225px;
+    left: -100px;
+}
+
+.roundWhite {
+    position: absolute;
+    bottom: -6%;
+    right: -8%;
+}
+
+
+@media only screen and (max-width: 1200px) {
+ 
+
+    .rounds {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 968px) {
+    .heroContent {
+        padding-top: 8rem;
+        /* background-color: green; */
+    }
+
+    .categoryImage {
+        height: 5rem;
+    }
+
+    .subtitle {
+        display: inline;
+    }
+}

@@ -1,0 +1,39 @@
+.footer {
+    margin-top: 4.5rem;
+    padding-top: 10rem;
+    padding-bottom: 2rem;
+    /* height: 900px; */
+    background-image: url('../../img/footer_bg.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    color: #fff;
+}
+
+.roundWhiteSmall {
+    position: absolute;
+    left: -40px;
+    top: -200px;
+}
+
+.headingContainer {
+    display: flex;
+    align-items: center;
+}
+
+.contactUsLine {
+    border-bottom: 1px solid rgb(165, 173, 252);
+}
+
+.contactUs {
+    color: rgb(165, 173, 252);
+}
+
+@media only screen and (max-width: 768px) {
+    .footer {
+        padding-top: 6rem;
+    }
+    .roundWhiteSmall {
+        display: none;
+    }
+}

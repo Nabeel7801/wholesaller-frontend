@@ -1,0 +1,86 @@
+/* giving custom spacing here instead of using global container class bcz  */
+
+.mobileApp {
+    height: 654px;
+    margin: 4.5rem 0;
+}
+
+.bg {
+    height: 100%;
+    background-image: url('../../img/mobile app/bg.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center bottom;
+    position: relative;
+    /* overflow-y: hidden; */
+}
+
+
+/* .mobileContent{
+  position: relative;
+} */
+
+.content {
+    height: 654px;
+    position: relative;
+}
+
+.textContainer {
+    max-width: 450px;
+}
+
+.headingContainer {
+    display: flex;
+    align-items: center;
+}
+
+.icons {
+    display: flex;
+}
+
+.mobilePictureContainer {
+    position: absolute;
+    right: 150px;
+    bottom: 0;
+}
+
+.roundWhiteSmall {
+    position: absolute;
+    right: 100px;
+    bottom: -145px;
+}
+
+@media only screen and (max-width: 1200px) {
+    .mobilePictureContainer {
+        right: 0;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .mobileApp {
+        margin: 0 0 2.5rem 0;
+    }
+    .bg {
+        background-image: none;
+    }
+    .content,
+    .mobileApp {
+        height: auto;
+    }
+    .headingContainer {
+        justify-content: center;
+    }
+    .textContainer {
+        text-align: center;
+        max-width: 500px;
+        margin: auto;
+    }
+    .icons {
+        justify-content: center;
+    }
+    .mobilePictureContainer,
+    .roundWhiteSmall,
+    .line {
+        display: none;
+    }
+}

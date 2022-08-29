@@ -1,0 +1,30 @@
+.inputField {
+    margin-top: 20px;
+    width: 100%;
+    overflow: visible;
+    display: block;
+    outline: none;
+    border: none;
+    padding: 1rem 1.5rem;
+    border-radius: 5px;
+    background-color: rgba(250, 251, 255, 0.1);
+    font-size: 18px;
+    transition: all .5s;
+    font-weight: 300;
+    font-family: Raleway, sans-serif;
+    box-sizing: border-box;
+    resize: vertical;
+    margin-right: auto
+}
+
+.inputField:hover,
+.inputField:active {
+    background-color: rgb(250, 251, 255);
+
+}
+
+.inputField::placeholder {
+    color: rgb(183, 201, 252);
+
+}
+

@@ -1,0 +1,62 @@
+/* hero sub section */
+
+.roundWhite {
+    position: absolute;
+    z-index: -1;
+    right: -100px;
+    top: 700px;
+}
+
+.videoBgContainer {
+    position: relative;
+
+}
+
+.image {
+    height: 100%;
+    min-height: 380px;
+    width: 100%;
+    display: block;
+}
+
+.playIconContainer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.playIconButton {
+    transition: all .5s !important;
+}
+
+.playIconButton:hover {
+    transform: scale(1.2);
+}
+
+.playIconButton:hover .playIcon {
+    fill: rgb(40, 121, 255) !important;
+}
+
+.playIcon {
+    transition: all .5s !important;
+    font-size: 6rem !important;
+    fill: rgb(0, 209, 228) !important;
+}
+
+@media only screen and (max-width: 968px) {
+    .roundWhite {
+        display: none;
+    }
+
+    .image {
+        min-height: 350px;
+    }
+    
+}
+@media only screen and (max-width:600px){
+    .image {
+        min-height: 250px;
+    }
+    
+}

@@ -1,0 +1,56 @@
+
+
+.textContainer {
+    color: rgb(250, 251, 255);
+}
+
+.contactInfo {
+    margin-bottom: 5px;
+}
+
+.contactInfo:last-child {
+    margin-bottom: 0;
+}
+
+.icons {
+    display: flex;
+    align-items: center;
+}
+
+.iconLink {
+    margin-left: 20px !important;
+    display: block !important;
+}
+
+.iconLink:first-child {
+    margin: 0 !important;
+}
+
+.iconBtn {
+    border: 1px solid rgb(250, 251, 255) !important;
+    transition: all .5s !important;
+}
+
+.iconBtn:hover {
+    opacity: 0.5 !important;
+}
+
+
+.icon {
+    fill: rgb(250, 251, 255) !important;
+}
+.terms{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.termText{
+    margin-top: 5px;
+    transition: all .5s;
+}
+.termText:first-child{
+    margin: 0;
+}
+.termText:hover{
+    opacity: 0.5;
+}

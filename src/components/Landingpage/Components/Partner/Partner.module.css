@@ -1,0 +1,8 @@
+.headingContainer{
+    display: flex;
+    align-items: center;
+}
+.partner{
+    width: 200px;
+    height: 200px;
+}

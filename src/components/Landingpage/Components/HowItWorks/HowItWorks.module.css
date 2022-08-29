@@ -1,0 +1,134 @@
+.howItWorks {
+    position: relative;
+}
+
+.bgContainer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.bg {
+    background-image: url(../../img/figure-2.webp);
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: absolute;
+    z-index: -2;
+    width: 40%;
+    max-width: 500px;
+    top: -150px;
+    height: 800px;
+}
+
+.container {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.iconContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+
+/* ~ is used to catch sibling container */
+
+.forthIconContainer~.arrow {
+    display: none;
+}
+
+.iconContainer::before,
+.iconContainer::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    width: 7.25rem;
+    border-bottom: 1px dashed rgb(40, 121, 255);
+    overflow: hidden;
+}
+
+.iconContainer::before {
+    left: 0;
+}
+
+.iconContainer::after {
+    right: 0;
+}
+
+.firstIconContainer::before {
+    display: none;
+}
+
+.forthIconContainer::after {
+    display: none;
+}
+
+.arrow {
+    /* position: absolute;
+    right: 0;
+    z-index: 1; */
+    /* background-image: url('../../img/arr-right.svg');
+    background-repeat: no-repeat;
+    background-size: cover; */
+    position: absolute;
+    right: 0;
+    transform: translateX(50%);
+    width: 30px;
+    height: 30px;
+    /* background-position:center;
+    background-size: cover; */
+}
+
+.forthIcon~.arrow {
+    display: none;
+}
+
+.dotted {
+    border-bottom: 1px dashed rgb(40, 121, 255);
+}
+
+.textContainer {
+    text-align: center;
+    width: 85%;
+    max-width: 300px;
+    margin: auto;
+}
+
+@media only screen and (max-width: 968px) {
+    .secondIcon~.arrow {
+        display: none;
+    }
+    .thirdIconContainer,
+    .forthIconContainer {
+        margin-top: 2rem;
+    }
+    .iconContainer::before,
+    .iconContainer::after {
+        width: 12rem;
+    }
+    .secondIconContainer::after {
+        display: none
+    }
+    .thirdIconContainer::before {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .contentContainer {
+        margin-bottom: 2rem;
+    }
+    .textContainer {
+        width: 100%;
+    }
+    .iconContainer {
+        margin: 0;
+    }
+    .iconContainer::before,
+    .iconContainer::after,
+    .arrow {
+        display: none;
+    }
+}
