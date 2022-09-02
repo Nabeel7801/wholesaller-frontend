@@ -2,6 +2,8 @@
 import * as React from 'react';
 import { Box, Card, CardContent, CardHeader } from '@mui/material';
 import { EditButton, TextField, RecordContextProvider, useListContext } from 'react-admin';
+import FullNameField from '../../components/FullNameField'
+import StatusField from './StatusField'
 
 const MobileGrid = () => {
     const { data, isLoading } = useListContext();
@@ -16,19 +18,13 @@ const MobileGrid = () => {
                 <RecordContextProvider key={record.id} value={record}>
                     <Card sx={{ margin: '0.5rem 0' }}>
                         <CardHeader
-                            title={record.identity}
-                            subheader={
-                                <>
-                                    {record.name}
-                                    &nbsp;
-                                    (<TextField source="username" />)
-                                </>
-                            }
+                            title={record.outlet_name}
                             action={<EditButton />}
                         />
                         <CardContent sx={{ pt: 0 }}>
-                            <TextField source="business_type" />
-                        
+                            <FullNameField />
+                            <TextField source="email" sx={{ margin: '10px 0'}}/>
+                            <StatusField source="status" />
                         </CardContent>
                         
                     </Card>

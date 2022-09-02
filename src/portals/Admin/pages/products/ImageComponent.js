@@ -29,14 +29,9 @@ const ImageComponent = props => {
 
         '& .defaultImage': {
             display: "block",
-            backgroundSize: "cover",
-            backgroundRepeat: "no-repeat",
             objectFit: "cover",
-            backgroundPosition: "center",
-            height: '100%', 
-            width: 'auto',
-            maxWidth: '14em',
-            maxHeight: '15em',
+            height: '15em', 
+            width: '100%',
             borderRadius: '10px',
             padding: '8px',
             boxSizing: 'border-box',
@@ -50,26 +45,21 @@ const ImageComponent = props => {
                 boxSizing: 'border-box',
                 marginTop: '20px',
                 width: '14em',
-                height: '15em'
+                height: '15em',
+                
+                '& .RaImageField-image': {
+                    zIndex: '10',
+                    display: "block",
+                    objectFit: "cover",
+                    height: '15em', 
+                    width: '100%',
+                    borderRadius: '10px'
+                },
             },
 
             '& .RaFileInput-removeButton, & .RaFileInput-preview': {
                 width: '100%'
-            },
-
-            '& .RaFileInput-preview img': {
-                zIndex: '10',
-                display: "block",
-                backgroundSize: "cover",
-                backgroundRepeat: "no-repeat",
-                height: '100%', 
-                width: 'auto',
-                maxWidth: '14em',
-                maxHeight: '15em',
-                objectFit: "cover",
-                backgroundPosition: "center",
-                borderRadius: '10px'
-            },
+            }
 
         },
 

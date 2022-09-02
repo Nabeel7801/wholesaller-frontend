@@ -1,490 +1,421 @@
 import React, { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { stringify } from 'query-string';
 
 import IndexNavbar from "components/Navbars/IndexNavbar.js";
 import MainNavbar from "components/Navbars/MainNavbar.js";
 import DemoFooter from "components/Footers/DemoFooter.js";
 
-import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
+import { Box, Card, Radio, Container, CardContent, CardMedia, Typography, Grid, TextField as TextFieldUI, Button, IconButton } from '@mui/material';
+
+import { styled } from "@material-ui/core/styles";
 import axios from "axios";
-import Avatar from "@material-ui/core/Avatar";
-import { IconButton } from "@material-ui/core";
-import Container from "@material-ui/core/Container";
-import {
-  Delete,
-  Remove,
-  Add,
-  ShoppingCart,
-  ArrowForwardIos,
-  LocationOn,
-} from "@material-ui/icons";
-import Button from "@material-ui/core/Button";
 
-import { useDispatch, useSelector } from "react-redux";
-import { updatecart } from "views/action/updatecart";
-import history from "views/history";
-import { Link } from "react-router-dom";
+import RemoveIcon from '@mui/icons-material/Remove';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: theme.spacing(2),
-    margin: "auto",
-    maxWidth: 1000,
-  },
-  image: {
-    width: 128,
-    height: 128,
-  },
-  img: {
-    margin: "auto",
-    display: "block",
-    maxWidth: "100%",
-    maxHeight: "100%",
-  },
-  large: {
-    width: theme.spacing(7),
-    height: theme.spacing(7),
-  },
-  delete: {
-    display: "flex",
-    marginLeft: "auto",
-  },
-  next: {
-    display: "flex",
-    justifyContent: "flex-end",
-  },
-  address: {
-    fontSize: "12px",
-    fontWeight: "500",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    maxWidth: "60%",
-    height: "18px",
-  },
-  addAddress: {
-    fontWeight: "700",
-    fontSize: "14px",
-  },
-  // location: {
-  //   fill: theme.colors.primary,
-  // },
-}));
+const TextField = styled(TextFieldUI)({
+  margin: "5px 0 !important"
+});
 
 function Cart() {
-  const dispatch = useDispatch();
-  const datafromstore = useSelector(
-    (state) => state.cartdetailarray.mycartdetails
-  );
+  const config = require("views/config");
+  const WAREHOUSE_ID1 = "62db44a1a223d5b546f4e81d";
 
-  const [cartstate, setcartstate] = useState(datafromstore);
+  const [deliveryFees] = useState(0)
+  const [cartState, setCartState] = useState(JSON.parse(localStorage.getItem("cart") || "[]"));
+  const [productDetails, setProductDetails] = useState();
+  const [total, setTotal] = useState(0);
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [currStep, setCurrStep] = useState(1);
 
-  const removefromcart = async (myid) => {
-    const arr = JSON.parse(localStorage.getItem("mycart")) || [];
+  const user = JSON.parse(localStorage.getItem("wholesaller") || "{}");
+  const [userInfo, setUserInfo] = useState({
+    user_id: user._id,
+    first_name: user.first_name,
+    last_name: user.last_name,
+    email: user.email,
+    address: user.address,
+    pincode: user.pincode,
+    city: user.city,
+    state: user.state
+  });
 
-    arr.splice(myid, 1);
+  const navigate = useNavigate();
 
-    localStorage.setItem("mycart", JSON.stringify(arr));
+  useEffect(() => {
 
-    dispatch(updatecart("updatecart"));
+    // Set Product Details
+    const productIDs = cartState?.map(c => c.product_id);
+    const query = { filter: JSON.stringify({ id: productIDs }) };
+    axios.get(`${config.servername}/admin/products?${stringify(query)}`)
+    .then(response => {
+      const responseData = response.data;
 
-    setcartstate(datafromstore);
-  };
-
-  const paynow = async (maini) => {
-    const arr = JSON.parse(localStorage.getItem("mycart")) || [];
-
-    var totalprice = 0;
-
-    for (var i = 0; i < arr[maini].products?.length; i++) {
-      for (var j = 0; j < arr[maini].products[i]?.sets.length; j++) {
-        totalprice =
-          totalprice +
-          arr[maini].products[i].sets[j].qty *
-            arr[maini].products[i].sets[j].priceofset;
-      }
-    }
-
-    var carddata = arr[maini];
-    var buyerid = JSON.parse(localStorage.getItem("wholesaller"))._id;
-    var status = "pending";
-
-    var myModule = require("views/config");
-    axios
-      .post(myModule.servername + "/api/order", {
-        carddata,
-        buyerid,
-        status,
-        totalprice,
+      const newProductData = responseData.map(product => {
+        product.cart_info = cartState.filter(cart => cart.product_id === product._id)[0];
+        return product;
       })
-      .then((res) => {});
+      setProductDetails(newProductData);
+
+    }).catch(err => console.log(err))
+
+  }, [cartState, config.servername]);
+
+  useEffect(() => {
+    // Set Total
+    setTotal(
+      productDetails?.reduce((sum, curr) => {
+        return sum + curr.cart_info.quantity;
+      }, 0)
+    )
+
+    // Set Total amount
+    setTotalAmount(
+      productDetails?.reduce((sum, curr) => {
+        return sum + curr.cart_info.quantity*curr.cart_info.buy_price;
+      }, 0.0)
+    )
+   
+  }, [productDetails])
+
+  const removeFromCart = key => {
+    setProductDetails(productDetails.filter((p, k) => k !== key));
   };
 
-  const deleteshop = async (maini) => {
-    const arr = JSON.parse(localStorage.getItem("mycart")) || [];
-
-    arr.splice(maini, 1);
-    localStorage.setItem("mycart", JSON.stringify(arr));
-
-    setcartstate(arr);
+  const changeQuantity = (key, isIncrement) => {
+    const newState = [...productDetails];
+    isIncrement ? newState[key].cart_info.quantity++ : newState[key].cart_info.quantity--;
+    setProductDetails(newState);
   };
 
-  const deleteset = async (maini, producti, seti) => {
-    ////alert(maini+seti)
-    const arr = JSON.parse(localStorage.getItem("mycart")) || [];
-    ///arr[maini].sets[seti]
-
-    arr[maini].products[producti].sets.splice(seti, 1);
-    localStorage.setItem("mycart", JSON.stringify(arr));
-
-    setcartstate(arr);
-  };
-
-  const changeqty = async (e, maini, producti, seti) => {
-    const arr = JSON.parse(localStorage.getItem("mycart")) || [];
-
-    arr[maini].products[producti].sets[seti].qty = parseInt(e.target.value);
-    console.log("arr", parseInt(e.target.value));
-    localStorage.setItem("mycart", JSON.stringify(arr));
-
-    setcartstate(arr);
-  };
-  const addqty = async (value, maini, producti, seti) => {
-    const arr = JSON.parse(localStorage.getItem("mycart")) || [];
-
-    arr[maini].products[producti].sets[seti].qty = parseInt(value);
-
-    localStorage.setItem("mycart", JSON.stringify(arr));
-
-    setcartstate(arr);
-  };
-  const removeqty = async (value, maini, producti, seti) => {
-    const arr = JSON.parse(localStorage.getItem("mycart")) || [];
-
-    arr[maini].products[producti].sets[seti].qty = parseInt(value);
-    localStorage.setItem("mycart", JSON.stringify(arr));
-    console.log("remove arr", arr);
-
-    setcartstate(arr);
-  };
-  function calculatetotal(maini) {
-    const arr = JSON.parse(localStorage.getItem("mycart")) || [];
-    var totalsum = 0;
-    for (var i = 0; i < arr[maini].products.length; i++) {
-      for (var j = 0; j < arr[maini].products[i].sets.length; j++) {
-        totalsum =
-          totalsum +
-          arr[maini].products[i].sets[j].qty *
-            arr[maini].products[i].sets[j].priceofset;
-      }
-    }
-
-    return totalsum;
+  const changeHandler = e => {
+    setUserInfo(prevInfo => ({
+      ...prevInfo,
+      [e.target.name]: e.target.value
+    }))
   }
-  let total = 0;
 
-  // useEffect(() => {
-  cartstate != null &&
-    cartstate.map((mains, maini) => {
-      return mains.products.map((productss, producti) => {
-        return productss.sets.map((setss, setsi) => {
-          {
-            const quantity = productss.sets.reduce((s, { qty }) => qty, 0);
-            total += quantity;
-          }
-        });
-      });
-    });
-  // }, []);
+  const placeOrderToDatabase = (customerID) => {
 
-  const classes = useStyles();
-  const defaultAddress = localStorage.getItem("address")
-    ? localStorage.getItem("address")
-    : "";
-  const handleContinue = (maini) => {
-    if (!defaultAddress) {
-      window.alert("Please add your address");
-    } else {
-      history.push("/payment/" + maini);
+    const basket = productDetails.map(product => ({product_id: product._id, buy_price: product.cart_info?.buy_price, quantity: product.cart_info?.quantity }))
+    // Place Order
+    const orderObj = {
+      date: (new Date()).toISOString(),
+      customer_id: userInfo._id,
+      dealer_type: "warehouse",
+      dealer_id: WAREHOUSE_ID1,
+      basket: basket,
+      delivery_fees: deliveryFees,
+      total: totalAmount,
+      status: "pending",
+      returned: false
     }
+
+    axios.post(`${config.servername}/admin/orders`, {...orderObj, customer_id: customerID})
+      .then(() => {
+        localStorage.removeItem("cart");
+        setCartState([]);
+        
+        toast.success('Order has been placed', {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+
+        setTimeout(() => {
+          navigate("/");
+        }, 3000)
+
+      }).catch(err => console.log(err))
+  }
+
+  const placeOrder = () => {
+
+    // Manage Customer
+    axios.get(`${config.servername}/getCustomerID/${userInfo.user_id}`)
+    .then(response => {
+      const responseData = response.data;
+
+      if (responseData.length > 0) {
+        axios.put(`${config.servername}/admin/customers/${responseData[0]._id}`, userInfo)
+        .then((res) => {
+          placeOrderToDatabase(res.data._id)
+
+        }).catch(err => console.log(err))
+
+      }else {
+        axios.post(`${config.servername}/admin/customers`, userInfo)
+          .then((res) => {
+            placeOrderToDatabase(res.data._id)
+
+          }).catch(err => console.log(err))
+
+      }
+    })
+    
   };
+
+  const style = total > 0 ? 
+    { backgroundColor: "#fff", paddingBottom: "20px"} 
+  : 
+    { paddingBottom: "20px" }
+
   return (
-    <div>
-      {localStorage.getItem("wholesaller") != null ? (
-        <>
-          <MainNavbar />
-        </>
-      ) : (
+    <div style={style}>
+      {localStorage.getItem("wholesaller") != null ?
+        <MainNavbar />
+      :
         <IndexNavbar />
-      )}
+      }
       <br />
       <br />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <Container maxWidth="lg">
-        {cartstate != null && cartstate.length != 0 ? (
-          <>
-            {cartstate.map((mains, maini) => (
-              <>
-                <Container maxWidth="lg">
-                  <div className={classes.root}>
-                    <div className="block p-2  mb-5 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-                      <div>
-                        <h2 className="font-bold text-lg flex items-start justify-between">
-                          <span className="inline-block">
-                            Total
-                            <span className="text-gray-500 font-medium">
-                              ({total} items)
-                            </span>
-                          </span>
-                          <span className="inline-block">
-                            ₹{calculatetotal(maini)}
-                          </span>
-                        </h2>
+        {total > 0 ? 
+          <Grid container spacing={6}>
+
+            <Grid item lg={8} md={7} sm={12}>
+              <Typography variant="h6">Products</Typography>
+              <hr /><br />
+              {productDetails?.map((product, key) => 
+
+                <Card key={key} sx={{ display: 'flex', position: "relative", alignItems: "center", margin: "20px 2.5%", boxShadow: "0px 3px 16px 0px rgba(200,200,200,0.4)" }}>
+                  <CardMedia
+                    component="img"
+                    sx={{ width: "100px", maxHeight: "125px" }}
+                    image={`${config.servername}/readfiles/${product.image}`}
+                    alt="Live from space album cover"
+                  />
+
+                  <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+                    <CardContent sx={{ flex: '1 0 auto' }}>
+                      
+                      <Typography component="div" variant="h5">
+                        {product.reference}
+                      </Typography>
+                      
+                      <Typography variant="subtitle1" color="text.secondary" component="div">
+                        ₹{product.cart_info?.buy_price}/Unit &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; Quantity: {product.cart_info?.quantity}
+                      </Typography>
+
+                    </CardContent>
+
+                    <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'flex-end', pl: 1, pb: 1 }}>
+                      
+                      <div className="input-group" style={{height: "40px", width: "140px", margin: "0 20px 0 0"}}>
+                        <div className="input-group-prepend">
+                          <button 
+                            type="button"
+                            className="btn btn-outline-primary px-2" 
+                            style={{padding: '0 0.25rem', height: '40px', backgroundColor: 'rgba(81, 203, 206, 0.4'}}
+                            onClick={() => changeQuantity(key, false)}
+                          >
+                            <RemoveIcon />
+                          </button>
+                        </div>
+                        
+                        <input 
+                          disabled
+                          type="text" 
+                          className="form-control" 
+                          style={{textAlign: 'center'}}
+                          value={product.cart_info?.quantity}
+                        />
+                        
+                        <div className="input-group-prepend">
+                          <button 
+                            type="button"
+                            className="btn btn-outline-primary px-2" 
+                            style={{padding: '0 0.25rem', height: '40px', backgroundColor: 'rgba(81, 203, 206, 0.4'}}
+                            onClick={() => changeQuantity(key, true)}
+                          >
+                              <AddIcon />
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                    <div>
-                      <Grid container spacing={1}>
-                        <Grid item>
-                          <Avatar
-                            alt="Remy Sharp"
-                            src={mains.shopimage}
-                            className={classes.large}
-                          />
+
+                    </Box>
+                  </Box>
+                  
+                  <IconButton aria-label="delete" onClick={() => removeFromCart(key)} sx={{color: "#C32147", position: "absolute", top: "10px", right: "10px"}}>
+                    <DeleteIcon sx={{fontSize: "1.2em"}}/>
+                  </IconButton>
+
+                </Card>
+
+              )}
+
+            </Grid>
+
+            <Grid item lg={4} md={5} sm={12}>
+                <Typography variant="h6" align="center">Order Summary</Typography>
+                <hr />
+                <Grid container>
+                  <Grid item xs={6}>
+                    <Typography variant="body2">Total</Typography>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Typography variant="body1" align="right" fontWeight={600}>₹ {totalAmount}</Typography>
+                  </Grid>
+                </Grid>
+                
+                {
+                  currStep === 1 ? 
+                    <Box>
+                      <hr />
+                      <form onSubmit={(e) => {e.preventDefault(); setCurrStep(2)}}>
+                        <Grid container spacing={1}>
+                          <Grid item xs={6}>
+                            <TextField 
+                              label="First Name" 
+                              variant="outlined" 
+                              value={userInfo.first_name}
+                              disabled
+                              fullWidth
+                            />
+                          </Grid>
+                          <Grid item xs={6}>
+                            <TextField 
+                              label="Last Name" 
+                              variant="outlined" 
+                              value={userInfo.last_name}
+                              disabled
+                              fullWidth
+                            />
+                          </Grid>
+                        </Grid>
+                        
+                        <TextField 
+                          label="Email"
+                          variant="outlined" 
+                          value={userInfo.email}
+                          disabled
+                          fullWidth
+                        />
+
+                        <TextField 
+                          label="Address" 
+                          variant="outlined" 
+                          required
+                          fullWidth 
+                          name="address"
+                          onChange={changeHandler}
+                          value={userInfo.address}
+                          multiline rows={3}
+                        />
+                        
+                        <Grid container spacing={1}>
+                          <Grid item xs={4}>
+                            <TextField 
+                              required 
+                              label="City" 
+                              variant="outlined"
+                              fullWidth 
+                              name="city"
+                              onChange={changeHandler}
+                              value={userInfo.city}
+                            />
+                          </Grid>
+
+                          <Grid item xs={4}>
+                            <TextField 
+                              required 
+                              label="State" 
+                              variant="outlined" 
+                              fullWidth 
+                              name="state"
+                              onChange={changeHandler}
+                              value={userInfo.state}
+                            />
+                          </Grid>
+
+                          <Grid item xs={4}>
+                            <TextField 
+                              required 
+                              label="Pincode" 
+                              variant="outlined" 
+                              fullWidth 
+                              name="pincode"
+                              onChange={changeHandler}
+                              value={userInfo.pincode}
+                              />
+                          </Grid>
                         </Grid>
 
-                        <Grid item>
-                          <h4 className="blackbold">{mains.shopname}</h4>
-                          <Typography variant="body2" gutterBottom>
-                            Business Type : {mains.category}
-                          </Typography>
-                        </Grid>
+                        <Button type="submit" variant="contained" fullWidth sx={{marginTop: '1em'}}>Proceed to Billing</Button>
+                      </form>
+                    </Box>
+                  :
+                  <>
+                    <Grid container>
+                      <Grid item xs={6}>
+                        <Typography variant="body2">Delivery</Typography>
                       </Grid>
-                      <div className="mt-3">
-                        {mains.products &&
-                          mains.products.map((productss, producti) => (
-                            <>
-                              {productss.sets.map((setss, setsi) => (
-                                <>
-                                  <div className="block p-3 mb-0 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-                                    <div className="flex items-start ">
-                                      <img
-                                        src={productss.mainimg}
-                                        className="w-10 h-10 "
-                                      />
-                                      <div className="flex-1 ml-2">
-                                        <h6 className="mb-2 font-semibold text-xs">
-                                          {productss.productname}
-                                        </h6>
-                                        <p className="text-xs mb-1 font-semibold text-gray-600">
-                                          Qty:
-                                          <span className="ml-1 inline-block">
-                                            {productss.sets.reduce(
-                                              (s, { qty }) => qty,
-                                              0
-                                            )}
-                                          </span>
-                                          <span className="ml-1  inline-block">
-                                            (set of 20pc)
-                                          </span>
-                                        </p>
-                                        <p className="text-xs font-semibold text-gray-600">
-                                          Color:
-                                          <span className="ml-1 inline-block">
-                                            {setss.setcolor.map((y, u) => (
-                                              <>{y},</>
-                                            ))}
-                                          </span>
-                                        </p>
-                                        <p className="text-xs font-semibold text-gray-600">
-                                          Size:
-                                          <span className="ml-1 inline-block">
-                                            {setss.sizes.map((y, u) => (
-                                              <>{y},</>
-                                            ))}
-                                          </span>
-                                        </p>
-                                        <p className="text-xs font-semibold text-gray-600">
-                                          Price:
-                                          <span className="ml-1 inline-block">
-                                            ₹{setss.priceofset}
-                                          </span>
-                                        </p>
-                                        <p className="text-xs font-semibold text-gray-600">
-                                          Total:
-                                          <span className="ml-1 inline-block">
-                                            ₹
-                                            {productss.sets.reduce(
-                                              (sum, { qty, priceofset }) =>
-                                                sum + qty * priceofset,
-                                              0
-                                            )}
-                                          </span>
-                                        </p>
-                                      </div>
-                                      <div className="w-20 ml-2">
-                                        <div className="ui input w-12 flex items-stretch">
-                                          <div
-                                            className=" cursor-pointer flex items-center add rounded-tl fill-white text-white  "
-                                            style={{ background: "#3f51b5" }}
-                                            onClick={() => {
-                                              setss.qty > 1 &&
-                                                removeqty(
-                                                  setss.qty - 1,
-                                                  maini,
-                                                  producti,
-                                                  setsi
-                                                );
-                                            }}
-                                          >
-                                            <Remove width={4} />
-                                          </div>
-                                          <input
-                                            className="w-7"
-                                            style={{ padding: "6px 2px" }}
-                                            value={setss.qty}
-                                            onChange={(e) =>
-                                              changeqty(
-                                                e,
-                                                maini,
-                                                producti,
-                                                setsi
-                                              )
-                                            }
-                                            type="number"
-                                            min={1}
-                                            defaultValue={1}
-                                          />
-                                          <div
-                                            className=" flex items-center minus rounded-tr cursor-pointer fill-white text-white "
-                                            style={{ background: "#3f51b5" }}
-                                            onClick={() =>
-                                              addqty(
-                                                setss.qty + 1,
-                                                maini,
-                                                producti,
-                                                setsi
-                                              )
-                                            }
-                                          >
-                                            <Add width={4} />
-                                          </div>
-                                        </div>
-                                        <div>
-                                          <IconButton
-                                            onClick={() =>
-                                              deleteset(maini, producti, setsi)
-                                            }
-                                            className={classes.delete}
-                                          >
-                                            <Delete></Delete>
-                                          </IconButton>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </>
-                              ))}
-                            </>
-                          ))}
-                      </div>
-                      <div className="my-3">
-                        <div className="pb-28">
-                          <Grid container spacing={1}>
-                            <Grid item xs={6}>
-                              <Button
-                                size="small"
-                                className={classes.next}
-                                onClick={() => deleteshop(maini)}
-                                variant="contained"
-                                color="secondary"
-                              >
-                                Remove Shop
-                              </Button>
-                            </Grid>
-                          </Grid>
-                        </div>
-                        <div className="fixed right-0 left-0 bottom-0">
-                          <div className="text-base bg-white text-white  shadow-lg ">
-                            <div className=" rounded-lg px-4 py-2 py-1 flex items-center justify-between">
-                              <div className="flex-1">
-                                <div className="mb-2">
-                                  <div
-                                    className="flex items-center justify-between cursor-pointer "
-                                    onClick={() => history.push("/add-address")}
-                                  >
-                                    <Typography
-                                      // className="text-lg text-black font-medium"
-                                      className={classes.address}
-                                      color="primary"
-                                    >
-                                      {defaultAddress && defaultAddress}
-                                    </Typography>
-                                    <div className="flex items-center">
-                                      <span className="mr-1">
-                                        <div style={{ transform: "scale(.8)" }}>
-                                          <LocationOn
-                                            className={classes.location}
-                                            color="primary"
-                                          />
-                                        </div>
-                                      </span>
-                                      <Typography
-                                        color="primary"
-                                        className={classes.addAddress}
-                                      >
-                                        {defaultAddress
-                                          ? "Change address"
-                                          : "Add address"}
-                                      </Typography>
-                                    </div>
-                                  </div>
-                                </div>
-                                <Button
-                                  fullWidth
-                                  type="button"
-                                  variant="contained"
-                                  className="text-sm px-4 py-3 uppercase font-medium text-white bg-blue-700 rounded-lg w-full"
-                                  style={{
-                                    justifyContent: "space-between",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    backgroundColor: "#3f51b5",
-                                  }}
-                                  onClick={() => handleContinue(maini)}
-                                >
-                                  <span className="block">
-                                    Continue to payment
-                                  </span>
-                                  <span className="block">
-                                    <IconButton
-                                      className="text-white w-3 h-3"
-                                      style={{ transform: "scale(.5)" }}
-                                    >
-                                      <ArrowForwardIos />
-                                    </IconButton>
-                                  </span>
-                                </Button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </Container>
-              </>
-            ))}
-          </>
-        ) : (
-          <>
-            <h1> No Items </h1>
-          </>
-        )}
+                      <Grid item xs={6}>
+                        <Typography variant="body1" align="right" fontWeight={600}>₹ {deliveryFees}</Typography>
+                      </Grid>
+                    </Grid>
+
+                    <Grid container>
+                      <Grid item xs={6}>
+                        <Typography variant="body2">Grand Total</Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <Typography variant="body1" align="right" fontWeight={600}>₹ {totalAmount+deliveryFees}</Typography>
+                      </Grid>
+                    </Grid>
+                    
+                    <Box>
+                      <hr />
+                      <Card sx={{boxShadow: "0px 3px 16px 0px rgba(200,200,200,0.4)"}}>
+                        <CardContent sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                          <Radio
+                            checked = {true}
+                            sx={{
+                              color: "#D81B60",
+                              '&.Mui-checked': {
+                                color: "#D81B60",
+                              },
+                            }}
+                          />
+
+                          <Typography variant="h6">
+                            Cash on Delivery
+                          </Typography>
+                        </CardContent>
+                      </Card>
+                      <Button onClick={placeOrder} variant="contained" fullWidth sx={{marginTop: '1em'}}>Complete Order</Button>
+
+                    </Box>
+                  </>
+                }
+                
+            </Grid>
+
+          </Grid>
+        :
+          <h4> No Items </h4>
+        }
 
         <DemoFooter />
+
       </Container>
     </div>
   );

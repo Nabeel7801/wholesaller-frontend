@@ -28,17 +28,13 @@ const SubCategory = () => {
     .then(res => {
       const resData = res.data;
       setAllCategories(resData);
-    })
-  }, [parent]);
-
-  useEffect(() => {
-    setTimeout(() => {
-      if (allCategories.length < 1) {
-        setNotFound(true);
+      if (resData.length < 1) {
+        setTimeout(() => {
+          setNotFound(true);
+        }, 5000);
       }
-    }, 5000);
-    window.scrollTo(0, 0);
-  }, []);
+    })
+  }, [config.servername, navigate, parent]);
 
   const filterbysubcategory = id => {
     axios.post(`${config.servername}/getProductByChildCategory/${id}`)

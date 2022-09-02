@@ -2,11 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Button, Label, FormGroup, Container, Row, Col } from "reactstrap";
 
 import axios from "axios";
-// core components
 
 import DemoFooter from "components/Footers/DemoFooter.js";
 import MainNavbar from "components/Navbars/MainNavbar.js";
-// material ui
+
 import { makeStyles } from "@material-ui/core/styles";
 import Buttonui from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
@@ -64,15 +63,12 @@ function BusinessPage() {
   const [sellerstatus, setsellerstatus] = useState([]);
 
   const [category, setcategory] = useState("");
-
-  const [businessname, setbusinessname] = useState("");
-
-  const [businesstype, setbusinesstype] = useState("");
+    
+  const config = require("views/config");
 
   const submit = async () => {
-    var myModule = require("views/config");
     axios
-      .post(myModule.servername + "/api/businessedit", {
+      .post(config.servername + "/api/businessedit", {
         name: name,
         email: email,
         img: img,
@@ -117,9 +113,8 @@ function BusinessPage() {
   };
 
   const fetchcurrentstatus = async () => {
-    var myModule = require("views/config");
     const response = await fetch(
-      myModule.servername + "/api/fetchcurrentstatus",
+      config.servername + "/api/fetchcurrentstatus",
       {
         method: "post",
         headers: {
@@ -137,9 +132,8 @@ function BusinessPage() {
   };
 
   const fetchsellerstatus = async () => {
-    var myModule = require("views/config");
     const response = await fetch(
-      myModule.servername + "/api/fetchsellerstatus",
+      config.servername + "/api/fetchsellerstatus",
       {
         method: "post",
         headers: {

@@ -142,7 +142,7 @@ const CustomerField = () => {
             <br />
             {record.address}
             <br />
-            {record.city}, {record.zipcode}
+            {record.city}, {record.pincode}
         </Typography>
     ) : null;
 };

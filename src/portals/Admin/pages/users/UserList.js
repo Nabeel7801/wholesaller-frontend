@@ -30,9 +30,9 @@ const UserList = () => {
                         },
                     }}
                 >
-                    <TextField label="Outlet Name" source="outlet_name" sx={{fontWeight: 'bold', color: '#555'}}/>
+                    <TextField label="Outlet" source="outlet_name" sx={{fontWeight: 'bold', color: '#555'}}/>
 
-                    <FullNameField label="Dealer"/>
+                    <FullNameField label="Name"/>
 
                     <TextField label="Email" source="email"/>
 

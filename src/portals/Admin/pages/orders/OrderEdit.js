@@ -38,6 +38,7 @@ const CustomerDetails = () => {
             >
                 {record?.first_name} {record?.last_name}
             </Typography>
+            <br />
             <Typography
                 component={Link}
                 color="primary"
@@ -59,7 +60,7 @@ const CustomerAddress = () => {
             </Typography>
             <Typography>{record?.address}</Typography>
             <Typography>
-                {record?.city}, {record?.stateAbbr} {record?.zipcode}
+                {record?.city}, {record?.stateAbbr} {record?.pincode}
             </Typography>
         </div>
     );

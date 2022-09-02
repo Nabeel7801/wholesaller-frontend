@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Container } from "reactstrap";
 
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { useMutation } from "react-query";
-import userService from "views/services/httpService/userAuth/userServices";
+import { useSelector } from "react-redux";
 
 import { fade, makeStyles } from "@material-ui/core/styles";
 import { AppBar, Toolbar, IconButton, Typography, Badge, MenuItem, Menu, Box, List, ListItem, SwipeableDrawer } from "@material-ui/core";
@@ -130,9 +128,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function MainNavbar() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [total, setTotal] = useState(0);
+  const [total] = useState(0);
 
   const [state, setState] = React.useState({
     left: false,
@@ -140,7 +137,7 @@ function MainNavbar() {
   
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [setMobileMoreAnchorEl] = React.useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
 
@@ -179,21 +176,21 @@ function MainNavbar() {
     setState({ ...state, [anchor]: open });
   };
 
-  const fetchAllCategories = useMutation(
-    (callApi) => userService.commonPostService("api/displaycategory", callApi),
-    {
-      onError: (error) => {
-        ////  toast.error('Error');
-      },
+  // const fetchAllCategories = useMutation(
+  //   (callApi) => userService.commonPostService("api/displaycategory", callApi),
+  //   {
+  //     onError: () => {
+  //       ////  toast.error('Error');
+  //     },
 
-      onSuccess: (data) => {
-        dispatch({ type: "getAllCategories", payload: data.data.result });
-      },
-    }
-  );
-  useEffect(() => {
-    fetchAllCategories.mutate();
-  }, []);
+  //     onSuccess: () => {
+  //       dispatch({ type: "getAllCategories", payload: data.data.result });
+  //     },
+  //   }
+  // );
+  // useEffect(() => {
+  //   fetchAllCategories.mutate();
+  // }, []);
   
   const data = [
     { heading: "Buyers" },
@@ -266,7 +263,7 @@ function MainNavbar() {
       onClick: logout,
     },
   ];
-  /////alert(sellerStatus);
+
   const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
@@ -282,13 +279,11 @@ function MainNavbar() {
       <MenuItem onClick={sallercenter}>Seller area</MenuItem>
       <MenuItem onClick={() => navigate("/")}>Return </MenuItem>
 
-      {sellerStatus == null ? (
-        <>
-          <MenuItem onClick={() => navigate("/applyseller")}>
-            Apply For Seller{" "}
-          </MenuItem>
-        </>
-      ) : null}
+      {sellerStatus === null && (
+        <MenuItem onClick={() => navigate("/applyseller")}>
+          Apply For Seller{" "}
+        </MenuItem>
+      )}
 
       <MenuItem onClick={() => navigate("/")}>Support</MenuItem>
       <MenuItem onClick={() => navigate("/order")}>Order</MenuItem>
@@ -336,10 +331,10 @@ function MainNavbar() {
                 </div>
               </div>
             </Link>
-            {data.map((item) => {
+            {data.map((item, key) => {
               const Icon = item?.icon;
               return (
-                <ListItem disablePadding onClick={item?.onClick}>
+                <ListItem key={key} disablePadding onClick={item?.onClick}>
                   {item.heading && (
                     <div>
                       <h2
@@ -379,7 +374,7 @@ function MainNavbar() {
   return (
     <div className={classes.grow}>
       <AppBar position="static" className={classes.appstyl}>
-        <Container className={classes.container} maxWidth="lg">
+        <Container className={classes.container} >
           <Toolbar variant="dense">
             <IconButton
               className={classes.iconButton}
@@ -407,11 +402,11 @@ function MainNavbar() {
                 aria-label="show 4 new mails" 
                 color="inherit"
                 className={classes.iconButton}
+                onClick={() => navigate("/cart")}
               >
                 <Badge
                   badgeContent={total}
                   color="secondary"
-                  onClick={() => navigate("/cart")}
                 >
                   <ShoppingCartIcon />
                 </Badge>

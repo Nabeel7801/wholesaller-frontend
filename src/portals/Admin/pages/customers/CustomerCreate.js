@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Create, SimpleForm, TextInput, PasswordInput, email } from 'react-admin';
+import { Create, SimpleForm, TextInput, email } from 'react-admin';
 import { Box, Typography } from '@mui/material';
 
 export const validateForm = (values) => {
@@ -17,10 +17,6 @@ export const validateForm = (values) => {
         if (error) {
             errors.email = error;
         }
-    }
-    if (values.password && values.password !== values.confirm_password) {
-        errors.confirm_password =
-            'The password confirmation is not the same as the password.';
     }
     return errors;
 };
@@ -69,19 +65,10 @@ const CustomerCreate = () => (
                     />
                 </Box>
                 <Box flex={2}>
-                    <TextInput source="zipcode" fullWidth helperText={false} />
+                    <TextInput source="pincode" fullWidth helperText={false} />
                 </Box>
             </Box>
-            <Separator />
-            <SectionTitle label="Password" />
-            <Box display={{ xs: 'block', sm: 'flex' }}>
-                <Box flex={1} mr={{ xs: 0, sm: '0.5em' }}>
-                    <PasswordInput source="password" fullWidth />
-                </Box>
-                <Box flex={1} ml={{ xs: 0, sm: '0.5em' }}>
-                    <PasswordInput source="confirm_password" fullWidth />
-                </Box>
-            </Box>
+            
         </SimpleForm>
     </Create>
 );

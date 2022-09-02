@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import ReactDOM from "react-dom";
 
 // styles
-import "antd/dist/antd.css";
-import 'react-phone-input-2/lib/style.css'
+import "react-phone-input-2/lib/style.css";
 import "assets/css/bootstrap.min.css";
 import "assets/css/paper-kit.css";
 import "assets/demo/demo.css";
 import "assets/demo/style.css";
 import "react-toastify/dist/ReactToastify.min.css";
+import 'antd/dist/antd.css';
 
 // pages
 import App from "views/App.js";

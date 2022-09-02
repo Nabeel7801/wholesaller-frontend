@@ -10,7 +10,7 @@ const NbNewOrders = props => {
             to="/orders"
             icon={ShoppingCartIcon}
             title="Monthly Orders"
-            subtitle={value}
+            subtitle={value === 0 ? "0" : value}
         />
     );
 };

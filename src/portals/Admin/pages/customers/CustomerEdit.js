@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Edit, TextInput, PasswordInput, SimpleForm } from 'react-admin';
+import { Edit, TextInput, SimpleForm } from 'react-admin';
 import { Grid, Box, Typography } from '@mui/material';
 
 import FullNameField from '../../components/FullNameField';
@@ -67,32 +67,13 @@ const CustomerEdit = () => {
                                 </Box>
                                 <Box flex={2}>
                                     <TextInput
-                                        source="zipcode"
+                                        source="pincode"
                                         fullWidth
                                         helperText={false}
                                     />
                                 </Box>
                             </Box>
 
-                            <Box mt="1em" />
-
-                            <Typography variant="h6" gutterBottom>
-                                Change Password
-                            </Typography>
-                            <Box display={{ xs: 'block', sm: 'flex' }}>
-                                <Box flex={1} mr={{ xs: 0, sm: '0.5em' }}>
-                                    <PasswordInput
-                                        source="password"
-                                        fullWidth
-                                    />
-                                </Box>
-                                <Box flex={1} ml={{ xs: 0, sm: '0.5em' }}>
-                                    <PasswordInput
-                                        source="confirm_password"
-                                        fullWidth
-                                    />
-                                </Box>
-                            </Box>
                         </Grid>
                     </Grid>
                 </div>

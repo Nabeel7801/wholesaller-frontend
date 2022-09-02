@@ -4,7 +4,6 @@ import { Typography } from '@mui/material';
 
 const StatusField = props => {
     const record = useRecordContext(props);
-    console.log(record)
     if (!record || !props.source) {
         return null;
     }
