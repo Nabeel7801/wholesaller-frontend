@@ -2,7 +2,7 @@
 import { fetchUtils } from 'react-admin';
 import { stringify } from 'query-string';
 
-const apiUrl = 'http://localhost:5000/admin';
+const apiUrl = 'https://wholesaller.com/api/admin';
 const httpClient = fetchUtils.fetchJson;
 
 const dataProvider = {

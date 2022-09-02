@@ -1,7 +1,7 @@
 
 module.exports = {
-  picserver: 'https://www.wholesaller.com/',
-  servername: 'https://www.wholesaller.com',
+  picserver: 'https://www.wholesaller.com/api/',
+  servername: 'https://www.wholesaller.com/api',
 };
 
 // module.exports = {

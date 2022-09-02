@@ -31,7 +31,7 @@ import { AdminApp } from './portals/Admin'
 
 const Portals = () => {
   const [appState, setAppState] = useState({
-    ATLAS_URI: "https://wholesaller.com"
+    ATLAS_URI: "https://wholesaller.com/api"
   })
 
   return (
