@@ -10,7 +10,7 @@ const TotalCustomers = props => {
             to="/orders"
             icon={PeopleIcon}
             title="Total Customers"
-            subtitle={value}
+            subtitle={value === 0 ? "0" : value}
         />
     );
 };

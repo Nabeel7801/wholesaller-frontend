@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+
 import { useGetList } from 'react-admin';
 import { useMediaQuery } from '@mui/material';
 import { subDays, startOfDay } from 'date-fns';
@@ -8,7 +9,7 @@ import NbNewOrders from './NbNewOrders';
 import PendingOrders from './PendingOrders';
 import OrderChart from './OrderChart';
 import TotalCustomers from './TotalCustomers';
-import TotalStores from './TotalStores';
+import TotalWarehouses from './TotalWarehouses';
 
 const styles = {
     flex: { display: 'flex' },
@@ -34,6 +35,18 @@ const Dashboard = () => {
         filter: { date_gte: aMonthAgo.toISOString() },
         sort: { field: 'date', order: 'DESC' },
         pagination: { page: 1, perPage: 50 },
+    });
+
+    const { data: totalCustomers } = useGetList('customers', {
+        filter: {},
+        sort: { field: 'id', order: 'ASC' },
+        pagination: { page: 1, perPage: 999999 },
+    });
+
+    const { data: totalWarehouses } = useGetList('warehouses', {
+        filter: {},
+        sort: { field: 'id', order: 'DESC' },
+        pagination: { page: 1, perPage: 999999 },
     });
 
     const aggregation = useMemo(() => {
@@ -66,13 +79,11 @@ const Dashboard = () => {
                 maximumFractionDigits: 0,
             }),
             nbNewOrders: aggregations.nbNewOrders,
-            pendingOrders: aggregations.pendingOrders,
-            totalStores: 1,
-            totalCustomers: 25
+            pendingOrders: aggregations.pendingOrders
         };
     }, [orders]);
 
-    const { nbNewOrders, revenue, totalCustomers, totalStores, pendingOrders, recentOrders } = aggregation;
+    const { nbNewOrders, revenue, pendingOrders, recentOrders } = aggregation;
 
     return isXSmall ? (
         <div>
@@ -81,9 +92,9 @@ const Dashboard = () => {
                 <VerticalSpacer />
                 <NbNewOrders value={nbNewOrders} />
                 <VerticalSpacer />
-                <TotalCustomers value={totalCustomers} />
+                <TotalCustomers value={totalCustomers?.length} />
                 <VerticalSpacer />
-                <TotalStores value={totalStores} />
+                <TotalWarehouses value={totalWarehouses?.length} />
                 <VerticalSpacer />
                 <PendingOrders orders={pendingOrders} />
             </div>
@@ -101,9 +112,9 @@ const Dashboard = () => {
             <VerticalSpacer />
 
             <div style={styles.flex}>
-                <TotalCustomers value={totalCustomers} />
+                <TotalCustomers value={totalCustomers?.length} />
                 <Spacer />
-                <TotalStores value={totalStores} />
+                <TotalWarehouses value={totalWarehouses?.length} />
             </div>
 
             <div style={styles.singleCol}>
@@ -124,9 +135,9 @@ const Dashboard = () => {
                     <Spacer />
                     <NbNewOrders value={nbNewOrders} />
                     <Spacer />
-                    <TotalCustomers value={totalCustomers} />
+                    <TotalCustomers value={totalCustomers?.length} />
                     <Spacer />
-                    <TotalStores value={totalStores} />
+                    <TotalWarehouses value={totalWarehouses?.length} />
                 </div>
 
                 <div style={styles.flex}>

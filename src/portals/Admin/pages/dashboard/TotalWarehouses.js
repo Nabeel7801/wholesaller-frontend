@@ -3,16 +3,16 @@ import StoreIcon from '@mui/icons-material/Store';
 
 import CardWithIcon from './CardWithIcon';
 
-const TotalStores = props => {
+const TotalWarehouses = props => {
     const { value } = props;
     return (
         <CardWithIcon
             to="/orders"
             icon={StoreIcon}
-            title="Total Stores"
-            subtitle={value}
+            title="Total Warehouses"
+            subtitle={value === 0 ? "0" : value}
         />
     );
 };
 
-export default TotalStores;
+export default TotalWarehouses;

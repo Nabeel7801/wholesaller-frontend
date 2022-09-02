@@ -11,6 +11,7 @@ import OrderIcon from '@mui/icons-material/AttachMoney'
 import InvoiceIcon from '@mui/icons-material/LibraryBooks'
 import ProductIcon from '@mui/icons-material/Collections'
 import StoreIcon from '@mui/icons-material/Store';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import PersonPinIcon from '@mui/icons-material/PersonPin';
 
 import SubMenu from './SubMenu';
@@ -125,7 +126,7 @@ const Menu = ({ dense = false }) => {
                         to="/customers"
                         state={{ _scrollToTop: true }}
                         primaryText="Customers"
-                        leftIcon={<PersonPinIcon />}
+                        leftIcon={<PeopleAltIcon />}
                         dense={dense}
                     />
                     <MenuItemLink
