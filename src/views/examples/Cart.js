@@ -82,13 +82,20 @@ function Cart() {
   }, [productDetails])
 
   const removeFromCart = key => {
-    setProductDetails(productDetails.filter((p, k) => k !== key));
+    const filteredProducts = productDetails.filter((p, k) => k !== key);
+    setProductDetails(filteredProducts);
+
+    const newCartInfo = filteredProducts.map(p => p.cart_info);
+    localStorage.setItem("cart", JSON.stringify(newCartInfo));
   };
 
   const changeQuantity = (key, isIncrement) => {
     const newState = [...productDetails];
     isIncrement ? newState[key].cart_info.quantity++ : newState[key].cart_info.quantity--;
     setProductDetails(newState);
+
+    const newCartInfo = newState.map(newState => newState.cart_info);
+    localStorage.setItem("cart", JSON.stringify(newCartInfo));
   };
 
   const changeHandler = e => {

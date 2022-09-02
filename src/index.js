@@ -8,7 +8,7 @@ import "assets/css/paper-kit.css";
 import "assets/demo/demo.css";
 import "assets/demo/style.css";
 import "react-toastify/dist/ReactToastify.min.css";
-import 'antd/dist/antd.css';
+import 'antd/dist/antd.min.css';
 
 // pages
 import App from "views/App.js";

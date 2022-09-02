@@ -105,13 +105,6 @@ const Menu = ({ dense = false }) => {
                         leftIcon={<OrderIcon />}
                         dense={dense}
                     />
-                    <MenuItemLink
-                        to="/receivables"
-                        state={{ _scrollToTop: true }}
-                        primaryText="Receivables"
-                        leftIcon={<StoreIcon />}
-                        dense={dense}
-                    />
                 </SubMenu>
 
                 <SubMenu
