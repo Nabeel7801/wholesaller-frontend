@@ -1,4 +1,3 @@
-import '../assets/css/index.css'
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { Admin, Title, Resource, CustomRoutes, NotFound } from 'react-admin';

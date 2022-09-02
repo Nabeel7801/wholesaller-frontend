@@ -5,8 +5,6 @@ import ReactDOM from "react-dom";
 import "react-phone-input-2/lib/style.css";
 import "assets/css/bootstrap.min.css";
 import "assets/css/paper-kit.css";
-import "assets/demo/demo.css";
-import "assets/demo/style.css";
 import "react-toastify/dist/ReactToastify.min.css";
 import 'antd/dist/antd.min.css';
 
@@ -33,7 +31,7 @@ import { AdminApp } from './portals/Admin'
 
 const Portals = () => {
   const [appState, setAppState] = useState({
-    ATLAS_URI: "http://localhost:5000"
+    ATLAS_URI: "https://wholesaller.com"
   })
 
   return (
@@ -54,12 +52,31 @@ const master = combineReducers({
   allcategories: allcategories,
 });
 
+const AdminTheme = React.lazy(() => import('./assets/themes/AdminTheme'));
+const AppTheme = React.lazy(() => import('./assets/themes/AppTheme'));
+
+const ThemeSelector = () => {
+  const pathname = window.location.pathname.split('/')[1];
+  
+  return (
+    <React.Suspense fallback={() => null}>
+      {pathname === "admin" ? 
+        <AdminTheme />
+      : 
+        <AppTheme />
+      }
+    </React.Suspense>
+  )
+}
+
 const store = createStore(master, composeWithDevTools(applyMiddleware(thunk)));
 const queryClient = new QueryClient();
 
 ReactDOM.render(
 
   <>
+    <ThemeSelector />
+
     {/* ------------- Panels (Admin, Warehosuse, Seller) ------------- */}
     <Portals />
 
@@ -70,7 +87,8 @@ ReactDOM.render(
       </QueryClientProvider>
       <ToastContainer />
     </Provider>
+
   </>,
 
-document.getElementById("root")
+  document.getElementById("root")
 );

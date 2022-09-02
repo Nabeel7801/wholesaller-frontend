@@ -169,13 +169,8 @@ function Cart() {
     
   };
 
-  const style = total > 0 ? 
-    { backgroundColor: "#fff", paddingBottom: "20px"} 
-  : 
-    { paddingBottom: "20px" }
-
   return (
-    <div style={style}>
+    <div style={{ paddingBottom: "20px" }}>
       {localStorage.getItem("wholesaller") != null ?
         <MainNavbar />
       :

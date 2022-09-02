@@ -8,8 +8,9 @@ import MainNavbar from "components/Navbars/MainNavbar.js";
 import LandingPageHeader from "components/Headers/LandingPageHeader.js";
 import Footer from "components/Footers/Footer";
 
-import { CircularProgress, Container } from "@material-ui/core";
+import { CircularProgress, Container, IconButton } from "@material-ui/core";
 import AssignmentIcon from "@material-ui/icons/Assignment";
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import axios from "axios";
 
 import SuccessCheck from "assets/img/success/check.gif";
@@ -228,14 +229,19 @@ function LandingPage() {
             <div className="text-white text-lg font-bold">
               <AssignmentIcon /> Want to see prices?
             </div>
-            <div className="text-white text-sm	font-semibold">
-              Complete your shop kyc
+            <div className="text-white text-sm font-semibold">
+              &nbsp;&nbsp;&nbsp;&nbsp;Complete your shop kyc
             </div>
           </div>
 
-          <a className="text-white" onClick={() => navigate("/verifydocument")}>
-            <i aria-hidden="true" class="angle right big icon floatright"></i>
-          </a>
+          <IconButton 
+            onClick={() => navigate("/verifydocument")}
+            aria-label="upload document" 
+            size="large" 
+            className="floatright"
+          >
+            <ChevronRightIcon fontSize="inherit" sx={{color: "white"}} />
+          </IconButton>
 
         </div>
       : 

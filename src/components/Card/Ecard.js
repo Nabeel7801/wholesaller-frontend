@@ -109,8 +109,6 @@ function Ecard(props) {
               ))}
             </div>
           )}
-
-          <Divider />
         </div>
       </Paper>
     </div>

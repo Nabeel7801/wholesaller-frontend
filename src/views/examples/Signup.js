@@ -8,7 +8,7 @@ import ReactPhoneInput from "react-phone-input-2";
 import DemoFooter from "components/Footers/DemoFooter.js";
 import IndexNavbar from "components/Navbars/IndexNavbar.js";
 
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { useForm, FormProvider, Controller } from "react-hook-form";
 
 function Signup() {
@@ -29,12 +29,32 @@ function Signup() {
     axios.post(`${config.servername}/register`, data)
       .then(response => {
         if (response.data) {
-          //handleClickOpen();
+          toast.success('Registered successfully!', {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+
           localStorage.setItem("wholesaller", JSON.stringify(response.data));
-          window.location.href = "/verifydocument";
+
+          setTimeout(() => {
+            window.location.href = "/verifydocument";
+          }, 200);
 
         }else {
-          toast.error("Account already exist");
+          toast.error('Account already exist', {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
           
         }
       }).catch(err => console.log(err))
@@ -72,6 +92,19 @@ function Signup() {
 
   return (
     <div>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+
       <IndexNavbar />
 
       <div className="container formArea">

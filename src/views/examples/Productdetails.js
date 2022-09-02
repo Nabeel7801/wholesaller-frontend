@@ -113,7 +113,7 @@ function Productdetails() {
   }
 
   return (
-    <div style={{ backgroundColor: "#fff" }}>
+    <div>
       {productDetails ? (
         <>
 

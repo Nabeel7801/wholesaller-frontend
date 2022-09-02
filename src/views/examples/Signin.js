@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"
 import { Button, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 
 import DemoFooter from "components/Footers/DemoFooter.js";
 import IndexNavbar from "components/Navbars/IndexNavbar.js";
@@ -58,11 +58,32 @@ function Signin() {
     axios.post(`${config.servername}/signin`, {email: email, password: password})
       .then(response => {
         if (response.data?.length > 0) {
-          localStorage.setItem("wholesaller", JSON.stringify(response.data[0]));
-          window.location.href = "/";
+          toast.success('Logged in successfully!', {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
 
+          localStorage.setItem("wholesaller", JSON.stringify(response.data[0]));
+
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 200);
+          
         }else {
-          toast.error("Invalid credentials entered");
+          toast.error('Invalid credentials entered', {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
           
         }
       }).catch(err => console.log(err))
@@ -75,6 +96,19 @@ function Signin() {
 
   return (
     <div>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+
       <IndexNavbar />
 
       <div className="container formArea">

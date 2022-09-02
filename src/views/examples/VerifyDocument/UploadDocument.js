@@ -100,9 +100,9 @@ function UploadDocument() {
       <MainNavbar />
       <Container>
         <div className="topmargin">
-          <div class="ui placeholder segment">
-            <div class="ui icon header">
-              <i aria-hidden="true" class="pdf file outline icon"></i>
+          <div className="ui placeholder segment">
+            <div className="ui icon header">
+              <i aria-hidden="true" className="pdf file outline icon"></i>
               upload {documentType} photo/pdf
             </div>
 
@@ -119,7 +119,7 @@ function UploadDocument() {
                 variant="contained"
                 color="primary"
                 component="span"
-                class="ui primary button"
+                className="ui primary button"
               >
                 Upload document
               </Button>
