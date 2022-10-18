@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ReactDOM from "react-dom";
+import {createRoot} from 'react-dom/client';
 
 // styles
 import "react-phone-input-2/lib/style.css";
@@ -72,23 +72,21 @@ const ThemeSelector = () => {
 const store = createStore(master, composeWithDevTools(applyMiddleware(thunk)));
 const queryClient = new QueryClient();
 
-ReactDOM.render(
+createRoot(document.getElementById("root"))
+  .render(
+    <>
+      <ThemeSelector />
 
-  <>
-    <ThemeSelector />
+      {/* ------------- Panels (Admin, Warehosuse, Seller) ------------- */}
+      <Portals />
 
-    {/* ------------- Panels (Admin, Warehosuse, Seller) ------------- */}
-    <Portals />
+      {/* ------------- Rest of the App ------------- */}
+      <Provider store={store}>
+        <QueryClientProvider client={queryClient}>
+          <App />
+        </QueryClientProvider>
+        <ToastContainer />
+      </Provider>
 
-    {/* ------------- Rest of the App ------------- */}
-    <Provider store={store}>
-      <QueryClientProvider client={queryClient}>
-        <App />
-      </QueryClientProvider>
-      <ToastContainer />
-    </Provider>
-
-  </>,
-
-  document.getElementById("root")
-);
+    </>
+  );

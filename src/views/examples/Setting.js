@@ -1,41 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { updatecart } from "views/action/updatecart";
-import {
-  Button,
-  Label,
-  FormGroup,
-  Input,
-  NavItem,
-  NavLink,
-  Nav,
-  Modal,
-  TabContent,
-  TabPane,
-  Row,
-  Col,
-} from "reactstrap";
+import React from "react";
+import { useNavigate } from 'react-router-dom';
+import { Button, Label, FormGroup} from "reactstrap";
 
 import MainNavbar from "components/Navbars/MainNavbar";
-import IndexNavbar from "components/Navbars/IndexNavbar.js";
-import LandingPageHeader from "components/Headers/LandingPageHeader.js";
 import DemoFooter from "components/Footers/DemoFooter.js";
-// import { Image } from 'semantic-ui-react'
 
-//sementic ui react
-
-//material ui styles
-import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
-import { withStyles } from "@material-ui/core/styles";
-import Collapse from "@material-ui/core/Collapse";
-import history from "views/history";
-
-import { Form, Space } from "antd";
-import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Setting() {
   const classes = useStyles();
+  const navigate = useNavigate();
 
   return (
     <div>
@@ -115,7 +88,7 @@ function Setting() {
               <Button
                 variant="contained"
                 color="secondary"
-                onClick={() => history.push("/")}
+                onClick={() => navigate("/")}
               >
                 Back
               </Button>
@@ -124,7 +97,7 @@ function Setting() {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => history.push("/")}
+                onClick={() => navigate("/")}
               >
                 Next
               </Button>

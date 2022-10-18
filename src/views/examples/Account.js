@@ -1,12 +1,11 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Avatar, Typography, Paper, Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 import MainNavbar from "components/Navbars/MainNavbar.js";
 import Footer from "components/Footers/DemoFooter.js";
 import Container from "@material-ui/core/Container";
-
-import history from "views/history";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -15,27 +14,29 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0, 3),
   },
   paper: {
-    // maxWidth: "80%",
-
     padding: theme.spacing(2),
   },
   large: {
     width: theme.spacing(7),
     height: theme.spacing(7),
   },
+  links: {
+    cursor: "pointer"
+  }
 }));
 
 function Account() {
   const classes = useStyles();
+  const navigate = useNavigate();
 
   return (
-    <div>
+    <>
       <MainNavbar />
+
       <Container maxWidth="lg">
+
         <div className="mt-5 w-full">
-          {/* <Row> */}
-          {/* <Col lg="12" md="10" sm="10" xs="12"> */}
-          <a onClick={() => history.push("/business")}>
+          <div className={classes.links} onClick={() => navigate("/business")}>
             <Paper className={classes.paper}>
               <Grid container wrap="nowrap" spacing={2}>
                 <Grid item>
@@ -60,16 +61,11 @@ function Account() {
                 </Grid>
               </Grid>
             </Paper>
-          </a>
-          {/* </Col> */}
-          {/* </Row> */}
-
+          </div>
           <br />
         </div>
-        {/* 
-        <Row>
-          <Col lg="12" md="10" sm="10" xs="12"> */}
-        <a onClick={() => history.push("/setting")}>
+
+        <div className={classes.links} onClick={() => navigate("/setting")}>
           <Paper className={classes.paper}>
             <Grid container wrap="nowrap" spacing={2}>
               <Grid item>
@@ -94,14 +90,13 @@ function Account() {
               </Grid>
             </Grid>
           </Paper>
-        </a>
-        {/* </Col>
-        </Row> */}
-
+        </div>
         <br />
+
       </Container>
+
       <Footer />
-    </div>
+    </>
   );
 }
 

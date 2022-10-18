@@ -4,7 +4,7 @@ import { Container } from "reactstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-import { fade, makeStyles } from "@material-ui/core/styles";
+import { alpha, makeStyles } from "@material-ui/core/styles";
 import { AppBar, Toolbar, IconButton, Typography, Badge, MenuItem, Menu, Box, List, ListItem, SwipeableDrawer } from "@material-ui/core";
 
 import MenuIcon from "@material-ui/icons/Menu";
@@ -69,9 +69,9 @@ const useStyles = makeStyles((theme) => ({
   search: {
     position: "relative",
     borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.white, 0.15),
+    backgroundColor: alpha(theme.palette.common.white, 0.15),
     "&:hover": {
-      backgroundColor: fade(theme.palette.common.white, 0.25),
+      backgroundColor: alpha(theme.palette.common.white, 0.25),
     },
     marginRight: theme.spacing(2),
     marginLeft: 0,
@@ -131,32 +131,10 @@ function MainNavbar() {
   const navigate = useNavigate();
   const [total] = useState(0);
 
-  const [state, setState] = React.useState({
-    left: false,
-  });
-  
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [setMobileMoreAnchorEl] = React.useState(null);
-
-  const isMenuOpen = Boolean(anchorEl);
-
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    handleMobileMenuClose();
-  };
-
-  const sallercenter = () => {
-    navigate("/saller");
-  };
+  
+  const [menuOpen, setMenuOpen] = useState(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const logout = async () => {
     localStorage.removeItem("wholesaller");
@@ -164,33 +142,6 @@ function MainNavbar() {
   };
 
   const sellerStatus = useSelector((s) => s.sellerStatus.sellerStatus);
-  const toggleDrawer = (anchor, open) => (event) => {
-    if (
-      event &&
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
-      return;
-    }
-
-    setState({ ...state, [anchor]: open });
-  };
-
-  // const fetchAllCategories = useMutation(
-  //   (callApi) => userService.commonPostService("api/displaycategory", callApi),
-  //   {
-  //     onError: () => {
-  //       ////  toast.error('Error');
-  //     },
-
-  //     onSuccess: () => {
-  //       dispatch({ type: "getAllCategories", payload: data.data.result });
-  //     },
-  //   }
-  // );
-  // useEffect(() => {
-  //   fetchAllCategories.mutate();
-  // }, []);
   
   const data = [
     { heading: "Buyers" },
@@ -264,19 +215,19 @@ function MainNavbar() {
     },
   ];
 
-  const menuId = "primary-search-account-menu";
+  // Desktop Menu
   const renderMenu = (
     <Menu
-      anchorEl={anchorEl}
+      anchorEl={menuOpen}
       anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      id={menuId}
+      id="primary-search-account-menu"
       keepMounted
       transformOrigin={{ vertical: "top", horizontal: "right" }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
+      open={Boolean(menuOpen)}
+      onClose={() => setMenuOpen(null)}
     >
       <MenuItem onClick={() => navigate("/account")}>Account</MenuItem>
-      <MenuItem onClick={sallercenter}>Seller area</MenuItem>
+      <MenuItem onClick={() => navigate("/saller")}>Seller area</MenuItem>
       <MenuItem onClick={() => navigate("/")}>Return </MenuItem>
 
       {sellerStatus === null && (
@@ -292,35 +243,36 @@ function MainNavbar() {
     </Menu>
   );
 
-  const mobileMenuId = "primary-search-account-menu-mobile";
-  const img = JSON.parse(localStorage.getItem("wholesaller")).profileImg;
+  const profileImg = JSON.parse(localStorage.getItem("wholesaller")).profileImg;
+
+  // Mobile Menu
   const renderMobileMenu = (
-    <React.Fragment key={"left"}>
+    <div className={classes.sectionMobile}>
       <SwipeableDrawer
         anchor={"left"}
-        open={state["left"]}
-        onClose={toggleDrawer("left", false)}
-        onOpen={toggleDrawer("left", true)}
+        open={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+        onOpen={() => setMobileMenuOpen(true)}
       >
         <Box
           sx={{ width: 280 }}
           role="presentation"
-          onClick={toggleDrawer("left", false)}
-          onKeyDown={toggleDrawer("left", false)}
+          onClick={() => setMobileMenuOpen(false)}
           className={classes.drawer}
         >
           <List style={{ paddingTop: 0 }}>
+            
             <Link to="/account">
               <div
                 className="flex items-center px-4 py-5 mb-6"
                 style={{ minHeight: "100px", backgroundColor: "#3f51b5" }}
               >
                 <img
-                  id="output"
-                  alt="..."
+                  alt="User profile"
                   className="rounded-lg w-16 h-16"
-                  src={img == null ? require("assets/img/avatar.png") : img}
+                  src={profileImg === null ? require("assets/img/avatar.png") : profileImg}
                 />
+
                 <div className="ml-3  text-white">
                   <p className="text-sm font-bold mb-1">
                     {JSON.parse(localStorage.getItem("wholesaller")).firstName}
@@ -329,53 +281,67 @@ function MainNavbar() {
                     {JSON.parse(localStorage.getItem("wholesaller")).phone}
                   </p>
                 </div>
+
               </div>
             </Link>
-            {data.map((item, key) => {
-              const Icon = item?.icon;
-              return (
-                <ListItem key={key} disablePadding onClick={item?.onClick}>
-                  {item.heading && (
-                    <div>
-                      <h2
-                        className="text-base  font-bold "
-                        onClick={() => item.link && navigate(item.link)}
-                      >
-                        {item.heading}
-                      </h2>
-                    </div>
-                  )}
-                  {item.icon && (
-                    <div className="mb-2 ml-2">
+            
+            {data.map((item, key) => (
+              <ListItem key={key} disablePadding onClick={item?.onClick}>
+                {item.heading && (
+                  <div>
+                    <h2
+                      className="text-base  font-bold "
+                      onClick={() => item.link && navigate(item.link)}
+                    >
+                      {item.heading}
+                    </h2>
+                  </div>
+                )}
+                {item.icon && (
+                  <div className="mb-2 ml-2">
+                    {item.link ? 
                       <Link
                         to={item.link}
                         className="text-black hover:text-black"
                       >
                         <div className="flex items-center">
                           <div>
-                            <Icon />
+                            <item.icon />
                           </div>
                           <div className="text-sm font-medium ml-4 capitalize">
                             {item.text}
                           </div>
                         </div>
                       </Link>
-                    </div>
-                  )}
-                </ListItem>
-              );
-            })}
+                    :
+                      <div className="flex items-center">
+                        <div>
+                          <item.icon />
+                        </div>
+                        <div className="text-sm font-medium ml-4 capitalize">
+                          {item.text}
+                        </div>
+                      </div>
+                    }
+
+                  </div>
+                )}
+              </ListItem>
+            ))}
+
           </List>
         </Box>
       </SwipeableDrawer>
-    </React.Fragment>
+    </div>
   );
 
   return (
     <div className={classes.grow}>
+      
       <AppBar position="static" className={classes.appstyl}>
         <Container className={classes.container} >
           <Toolbar variant="dense">
+
             <IconButton
               className={classes.iconButton}
               onClick={() => navigate(-1)}
@@ -386,6 +352,7 @@ function MainNavbar() {
                 />
               </div>
             </IconButton>
+
             <Typography
               className={classes.menuButton}
               edge="start"
@@ -397,7 +364,9 @@ function MainNavbar() {
             </Typography>
 
             <div className={classes.grow} />
+
             <div className={classes.sectionDesktop}>
+              
               <IconButton 
                 aria-label="show 4 new mails" 
                 color="inherit"
@@ -415,31 +384,37 @@ function MainNavbar() {
               <IconButton
                 edge="end"
                 aria-label="account of current user"
-                aria-controls={mobileMenuId}
+                aria-controls="primary-search-account-menu-mobile"
                 aria-haspopup="true"
-                onClick={handleProfileMenuOpen}
+                onClick={(e) => setMenuOpen(e.currentTarget)}
                 className={classes.iconButton}
                 color="inherit"
               >
                 <AccountCircle />
               </IconButton>
+
             </div>
+
             <div className={classes.sectionMobile}>
               <IconButton
                 aria-label="show more"
-                aria-controls={mobileMenuId}
+                aria-controls="primary-search-account-menu-mobile"
                 aria-haspopup="true"
-                onClick={toggleDrawer("left", true)}
+                onClick={() => setMobileMenuOpen(true)}
                 color="inherit"
               >
                 <MenuIcon />
               </IconButton>
             </div>
+
           </Toolbar>
         </Container>
       </AppBar>
+
       {renderMobileMenu}
+
       {renderMenu}
+
     </div>
   );
 }

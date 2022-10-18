@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button, Label, FormGroup, Container, Row, Col } from "reactstrap";
 
 import axios from "axios";
@@ -12,14 +13,9 @@ import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { resizeFile } from "views/globalfunctions/Base64";
-import history from "views/history";
 
 import { Tag, message } from "antd";
-import {
-  CheckCircleOutlined,
-  SyncOutlined,
-  CloseCircleOutlined,
-} from "@ant-design/icons";
+import { CheckCircleOutlined, SyncOutlined, CloseCircleOutlined } from "@ant-design/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,26 +40,17 @@ const useStyles = makeStyles((theme) => ({
 
 function BusinessPage() {
   const classes = useStyles();
+  const navigate = useNavigate();
 
-  const [name, setname] = useState(
-    JSON.parse(localStorage.getItem("wholesaller")).firstName
-  );
-  const [img, setimg] = useState(
-    JSON.parse(localStorage.getItem("wholesaller")).profileImg
-  );
-  const [phone, setphone] = useState(
-    JSON.parse(localStorage.getItem("wholesaller")).phone
-  );
-  const [email, setemail] = useState(
-    JSON.parse(localStorage.getItem("wholesaller")).email
-  );
+  const localStorageUser = JSON.parse(localStorage.getItem("wholesaller"));
 
+  const [name, setname] = useState(localStorageUser.first_name || "")
+  const [img, setimg] = useState(localStorageUser.profileImg || "")
+  const [phone, setphone] = useState(localStorageUser.phone || "")
+  const [email, setemail] = useState(localStorageUser.email || "")
   const [currentstatus, setcurrentstatus] = useState([]);
-
   const [sellerstatus, setsellerstatus] = useState([]);
-
-  const [category, setcategory] = useState("");
-    
+   
   const config = require("views/config");
 
   const submit = async () => {
@@ -73,27 +60,14 @@ function BusinessPage() {
         email: email,
         img: img,
         phone: phone,
-        category,
-        category,
         id: JSON.parse(localStorage.getItem("wholesaller"))._id,
       })
       .then((res) => {
-        ////console.log(res);
-        ////console.log(res.data);
         localStorage.setItem("wholesaller", JSON.stringify(res.data));
       });
 
     message.success("Updated");
   };
-
-  const [state, setState] = React.useState({
-    checkedA: false,
-    checkedB: false,
-    checkedC: false,
-    checkedD: false,
-    checkedE: false,
-    checkedF: false,
-  });
 
   const onChangeHandler = async (e) => {
     var reader = new FileReader();
@@ -120,11 +94,7 @@ function BusinessPage() {
         headers: {
           "content-type": "application/x-www-form-urlencoded; charset=utf-8",
         },
-        body: `id=${JSON.parse(localStorage.getItem("wholesaller"))._id}`,
-        // body: JSON.stringify({
-        //   fabric: fabric,
-
-        // })
+        body: `id=${JSON.parse(localStorage.getItem("wholesaller"))._id}`
       }
     );
     const json = await response.json();
@@ -171,7 +141,7 @@ function BusinessPage() {
                 id="output"
                 alt="..."
                 className="img-circle img-no-padding img-responsive"
-                src={img == null ? require("assets/img/avatar.png") : img}
+                src={img === null ? require("assets/img/avatar.png") : img}
               />
             </div>
           </div>
@@ -201,19 +171,19 @@ function BusinessPage() {
 
               {currentstatus != null ? (
                 <>
-                  {currentstatus.status == "requested" ? (
+                  {currentstatus.status === "requested" ? (
                     <>
                       <Tag icon={<SyncOutlined spin />} color="processing">
                         Pending
                       </Tag>
                     </>
-                  ) : currentstatus.status == "rejected" ? (
+                  ) : currentstatus.status === "rejected" ? (
                     <>
                       <Tag icon={<CloseCircleOutlined />} color="error">
                         Rejected
                       </Tag>
                     </>
-                  ) : currentstatus.status == "approved" ? (
+                  ) : currentstatus.status === "approved" ? (
                     <>
                       <Tag icon={<CheckCircleOutlined />} color="success">
                         Verified
@@ -307,7 +277,7 @@ function BusinessPage() {
                     <Button
                       className="btn"
                       color="warning"
-                      onClick={() => history.push("/verifydocument")}
+                      onClick={() => navigate("/verifydocument")}
                     >
                       Verify Now
                     </Button>
@@ -322,7 +292,7 @@ function BusinessPage() {
           <Row>
             {sellerstatus != null ? (
               <>
-                {sellerstatus.status == "requested" ? (
+                {sellerstatus.status === "requested" ? (
                   <>
                     <Typography
                       variant="body2"
@@ -334,7 +304,7 @@ function BusinessPage() {
                       </p>
                     </Typography>
                   </>
-                ) : sellerstatus.status == "rejected" ? (
+                ) : sellerstatus.status === "rejected" ? (
                   <>
                     <Typography
                       variant="body2"
@@ -347,7 +317,7 @@ function BusinessPage() {
                       </p>
                     </Typography>
                   </>
-                ) : sellerstatus.status == "approved" ? (
+                ) : sellerstatus.status === "approved" ? (
                   <>
                     <Typography
                       variant="body2"
@@ -377,7 +347,7 @@ function BusinessPage() {
                       <Button
                         className="btn"
                         color="danger"
-                        onClick={() => history.push("/applyseller")}
+                        onClick={() => navigate("/applyseller")}
                       >
                         Apply Now
                       </Button>

@@ -16,9 +16,9 @@ import Support from "./Saller/Support";
 import Sellerpage from "./examples/Sellerpage";
 import ApplySeller from "./examples/Account/ApplySeller";
 
-// import Setting from "./examples/Setting";
-// import Account from "./examples/Account";
-// import BusinessPage from "./examples/BusinessPage";
+import Setting from "./examples/Setting";
+import Account from "./examples/Account";
+import BusinessPage from "./examples/BusinessPage";
 
 import GST from "./examples/VerifyDocument/GST";
 import Order from "./examples/Order";
@@ -72,11 +72,11 @@ function App() {
           <Route path="/returns" element={<Returns />} />
           
           <Route path="/cart" element={<Cart />} />
-{/* 
+
           <Route path="/account" element={<Account />} />
           <Route path="/business" element={<BusinessPage />} />
           <Route path="/setting" element={<Setting />} />
-           */}
+          
           <Route path="/sellerpage/:id" element={<Sellerpage />} />
           <Route path="/forgetpass" element={<ForgetPass />} />
 

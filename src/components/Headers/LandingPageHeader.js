@@ -61,7 +61,7 @@ function LandingPageHeader() {
   const [mainCategories, setMainCategories] = useState([]);
   const [selectionCategory, setselectionCategory] = useState({id: "", title: ""});
 
-  const [modal, setModal] = useState(false);
+  const [modal, setModal] = useState(true);
   
   useEffect(() => {
     axios.post(`${config.servername}/categoriesByParent/${selectionCategory.id}`)
@@ -121,7 +121,7 @@ function LandingPageHeader() {
                       type="button"
                       onClick={() => toggleModal()}
                     >
-                      {selectionCategory.title !== "" ? selectionCategory.title : "All categories"}
+                      {selectionCategory.title && selectionCategory.title !== "" ? selectionCategory.title : "All categories"}
                       <svg
                         className="ml-1 w-4 h-4"
                         fill="currentColor"
@@ -220,10 +220,7 @@ function LandingPageHeader() {
 
           <Modal
             isOpen={modal}
-            toggle={() => {
-              setselectionCategory("");
-              toggleModal();
-            }}
+            toggle={toggleModal}
           >
             <div className="modal-header">
               <button
