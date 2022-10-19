@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {createRoot} from 'react-dom/client';
+import { BrowserRouter } from "react-router-dom";
 
 // styles
 import "react-phone-input-2/lib/style.css";
@@ -83,7 +84,9 @@ createRoot(document.getElementById("root"))
       {/* ------------- Rest of the App ------------- */}
       <Provider store={store}>
         <QueryClientProvider client={queryClient}>
-          <App />
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
         </QueryClientProvider>
         <ToastContainer />
       </Provider>

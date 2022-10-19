@@ -56,21 +56,15 @@ function LandingPageHeader() {
 
   const dispatch = useDispatch();
   const classes = useStyles();
+  const main_category = JSON.parse(localStorage.getItem("main_category"));
 
   const [categories, setCategories] = useState([]);
   const [mainCategories, setMainCategories] = useState([]);
-  const [selectionCategory, setselectionCategory] = useState({id: "", title: ""});
+  const [selectionCategory, setselectionCategory] = useState(main_category || {id: "", title: ""});
 
-  const [modal, setModal] = useState(true);
+  const [modal, setModal] = useState(!main_category);
   
   useEffect(() => {
-    axios.post(`${config.servername}/categoriesByParent/${selectionCategory.id}`)
-    .then(res => {
-        const resData = res.data;
-        setCategories(resData);
-
-    }).catch(err => console.log(err))
-
     axios.post(`${config.servername}/maincategories`)
     .then(res => {
         const resData = res.data;
@@ -79,6 +73,17 @@ function LandingPageHeader() {
 
     }).catch(err => console.log(err))
     
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem("main_category", JSON.stringify(selectionCategory))
+    axios.post(`${config.servername}/categoriesByParent/${selectionCategory.id}`)
+    .then(res => {
+        const resData = res.data;
+        setCategories(resData);
+
+    }).catch(err => console.log(err))
+
     if (!selectionCategory) {
       toggleModal();
     }

@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"
+import { localStorageData } from "views/services/auth/localStorageData";
+
 import { Button, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
 import { toast, ToastContainer } from "react-toastify";
 
@@ -93,6 +95,12 @@ function Signin() {
   const [open, setOpen] = useState(false);
   const handleClickOpen = () => { setOpen(true) };
   const handleClose = () => { setOpen(false) };
+
+  useEffect(() => {
+    if (localStorageData("_id")) {
+      navigate("/")
+    }
+  }, [])
 
   return (
     <div>

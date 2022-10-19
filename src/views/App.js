@@ -1,5 +1,5 @@
-import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
 
 import Test from "./index-sections/Test";
 
@@ -35,30 +35,39 @@ import Verifydocument from "./examples/VerifyDocument/Verifydocument";
 import Signin from "./examples/Signin";
 
 function App() {
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!localStorageData("_id") && window.location.pathname !== "/") {
+      navigate("/signin")
+    }
+  }, [])
+
   return (
 
-      <BrowserRouter>
+    <Routes>
 
-        <Routes>
+      {/* ------------- Index Page ------------- */}
+      {
+        localStorageData("_id") ? 
+          <Route path="/" element={<LandingPage />} /> :
+          <Route path="/" element={<Home />} />
+      }
 
-          {/* ------------- Index Page ------------- */}
-          {
-            localStorageData("_id") ? 
-              <Route path="/" element={<LandingPage />} /> :
-              <Route path="/" element={<Home />} />
-          }
+      {/* ------------- Seller Routes ------------- */}
 
-          {/* ------------- Seller Routes ------------- */}
+      <Route path="/saller" element={routersaller} />
 
-          <Route path="/saller" element={routersaller} />
-
+      <Route path="/signin" element={<Signin />} />
+      <Route path="/signup" element={<Signup />} />
+      
+      {localStorageData("_id") &&
+        <>
           <Route path="/categories/:parent" element={<SubCategory />} />
           <Route path="/products" element={<SubCategoryProducts />} />
           <Route path="/productdetail/:productID" element={<Productdetails />} />
 
-          <Route path="/signin" element={<Signin />} />
-          <Route path="/signup" element={<Signup />} />
-          
           <Route path="/verifydocument" element={<Verifydocument />} />
           <Route path="/uploaddocument/:documentType" element={<UploadDocument />} />
           
@@ -86,10 +95,9 @@ function App() {
           <Route path="/test" element={<Test />} />
           <Route path="/support" element={<Support />} />
           <Route path="/add-address" element={<AddAddress />} />
-
-        </Routes>
-
-      </BrowserRouter>
+        </>
+      }
+    </Routes>
 
   );
 }
