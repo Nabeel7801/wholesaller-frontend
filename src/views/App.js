@@ -40,7 +40,10 @@ function App() {
 
   useEffect(() => {
     if (!localStorageData("_id") && window.location.pathname !== "/") {
-      navigate("/signin")
+      const { pathname } = window.location;
+      if (pathname !== "/signin" && pathname !== "/signup" && pathname !== "/forgetpass") {
+        navigate("/signin")
+      }
     }
   }, [])
 
@@ -61,6 +64,7 @@ function App() {
 
       <Route path="/signin" element={<Signin />} />
       <Route path="/signup" element={<Signup />} />
+      <Route path="/forgetpass" element={<ForgetPass />} />
       
       {localStorageData("_id") &&
         <>
@@ -87,7 +91,6 @@ function App() {
           <Route path="/setting" element={<Setting />} />
           
           <Route path="/sellerpage/:id" element={<Sellerpage />} />
-          <Route path="/forgetpass" element={<ForgetPass />} />
 
           <Route path="/gst" element={<GST />} />
           <Route path="/order" element={<Order />} />
