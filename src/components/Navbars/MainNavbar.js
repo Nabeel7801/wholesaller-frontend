@@ -2,32 +2,17 @@ import React, { useState } from "react";
 import { Container } from "reactstrap";
 
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import { alpha, makeStyles } from "@material-ui/core/styles";
 import { AppBar, Toolbar, IconButton, Typography, Badge, MenuItem, Menu, Box, List, ListItem, SwipeableDrawer } from "@material-ui/core";
 
-import MenuIcon from "@material-ui/icons/Menu";
-import AccountCircle from "@material-ui/icons/AccountCircle";
-import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
+import { Menu as MenuIcon, AccountCircle, ShoppingCart, ArrowBackIos, BookmarkBorder, CompareArrowsOutlined, NoteAddOutlined, ListAltOutlined, ShoppingBasketOutlined, FormatListNumberedOutlined, InfoOutlined, AssignmentOutlined, PolicyOutlined, MessageOutlined, PaymentOutlined, GavelOutlined } from "@material-ui/icons";
 
-import {
-  ArrowBackIos,
-  BookmarkBorder,
-  CompareArrowsOutlined,
-  NoteAddOutlined,
-  ListAltOutlined,
-  ShoppingBasketOutlined,
-  FormatListNumberedOutlined,
-  InfoOutlined,
-  AssignmentOutlined,
-  PolicyOutlined,
-  MessageOutlined,
-  PaymentOutlined,
-  GavelOutlined,
-} from "@material-ui/icons";
+import { logout as logoutAction } from 'store/reducers/auth'
 
-
+import ConfirmDialog from 'components/ConfirmDialog';
+ 
 const useStyles = makeStyles((theme) => ({
   itemText: {
     textAlign: "left",
@@ -129,7 +114,7 @@ const useStyles = makeStyles((theme) => ({
 
 function MainNavbar() {
   const navigate = useNavigate();
-  const [total] = useState(0);
+  const dispatch = useDispatch();
 
   const classes = useStyles();
   
@@ -137,18 +122,20 @@ function MainNavbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const logout = async () => {
-    localStorage.removeItem("wholesaller");
-    window.location.href = "/";
+    dispatch(logoutAction());
+    navigate("/");
   };
 
-  const sellerStatus = useSelector((s) => s.sellerStatus.sellerStatus);
+  const sellerStatus = useSelector((s) => s.seller.status);
+  const cartItems = useSelector((state) => state.cart.items);
+  const user = useSelector((state) => state.auth.user);
   
   const data = [
     { heading: "Buyers" },
     {
       icon: BookmarkBorder,
       text: "your orders",
-      link: "/order",
+      link: "/order-history",
     },
     {
       icon: CompareArrowsOutlined,
@@ -228,7 +215,7 @@ function MainNavbar() {
     >
       <MenuItem onClick={() => navigate("/account")}>Account</MenuItem>
       <MenuItem onClick={() => navigate("/saller")}>Seller area</MenuItem>
-      <MenuItem onClick={() => navigate("/")}>Return </MenuItem>
+      <MenuItem onClick={() => navigate("/returns")}>Returns</MenuItem>
 
       {sellerStatus === null && (
         <MenuItem onClick={() => navigate("/applyseller")}>
@@ -236,14 +223,14 @@ function MainNavbar() {
         </MenuItem>
       )}
 
-      <MenuItem onClick={() => navigate("/")}>Support</MenuItem>
-      <MenuItem onClick={() => navigate("/order")}>Order</MenuItem>
+      <MenuItem onClick={() => navigate("/support")}>Support</MenuItem>
+      <MenuItem onClick={() => navigate("/order-history")}>Order</MenuItem>
 
       <MenuItem onClick={logout}>Logout</MenuItem>
     </Menu>
   );
 
-  const profileImg = JSON.parse(localStorage.getItem("wholesaller")).profileImg;
+  const profileImg = user.profileImg;
 
   // Mobile Menu
   const renderMobileMenu = (
@@ -275,10 +262,10 @@ function MainNavbar() {
 
                 <div className="ml-3  text-white">
                   <p className="text-sm font-bold mb-1">
-                    {JSON.parse(localStorage.getItem("wholesaller")).firstName}
+                    {user.firstName}
                   </p>
                   <p className="text-sm">
-                    {JSON.parse(localStorage.getItem("wholesaller")).phone}
+                    {user.phone}
                   </p>
                 </div>
 
@@ -290,7 +277,7 @@ function MainNavbar() {
                 {item.heading && (
                   <div>
                     <h2
-                      className="text-base  font-bold "
+                      className="text-base font-bold "
                       onClick={() => item.link && navigate(item.link)}
                     >
                       {item.heading}
@@ -374,10 +361,10 @@ function MainNavbar() {
                 onClick={() => navigate("/cart")}
               >
                 <Badge
-                  badgeContent={total}
+                  badgeContent={cartItems?.length || 0}
                   color="secondary"
                 >
-                  <ShoppingCartIcon />
+                  <ShoppingCart />
                 </Badge>
               </IconButton>
 
@@ -414,6 +401,8 @@ function MainNavbar() {
       {renderMobileMenu}
 
       {renderMenu}
+
+      <ConfirmDialog />
 
     </div>
   );

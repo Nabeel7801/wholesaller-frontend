@@ -35,9 +35,9 @@ function ZoomImage({src}) {
     return (
         <figure 
             style={{...state, ...styles.figure}}
-            onMouseMove={handleMouseMove} 
-            onMouseEnter={() => setHover(true)}
-            onMouseLeave={() => setHover(false)}
+            // onMouseMove={handleMouseMove} 
+            // onMouseEnter={() => setHover(true)}
+            // onMouseLeave={() => setHover(false)}
         >
             <img src={src} style={styles.img} />
         </figure>

@@ -9,7 +9,7 @@ const DocumentArea = props => {
     
     const { appState } = useContext(AppContext);
     const url = appState.ATLAS_URI;
-console.log(record)
+    
     return (
         
         <>
@@ -25,7 +25,7 @@ console.log(record)
             <Box mt="2em" />
             
             <iframe 
-                src={`${url}/file/${record?.filename}`}
+                src={`${url}/readfiles/${record?.filename}`}
                 title="Document"
                 style={{
                     width: '100%',

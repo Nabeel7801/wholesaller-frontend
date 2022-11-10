@@ -1,8 +1,10 @@
 
 import { fetchUtils } from 'react-admin';
 import { stringify } from 'query-string';
+import axios from 'axios';
 
 const apiUrl = 'https://wholesaller.com/api/admin';
+//const apiUrl = 'http://localhost:5000/api/admin';
 const httpClient = fetchUtils.fetchJson;
 
 const dataProvider = {
@@ -26,18 +28,18 @@ const dataProvider = {
         
         const url = `${apiUrl}/${resource}?${stringify(query)}`;
 
-        return httpClient(url).then(({json}) => {
-            const range = json.pop();
+        return axios.get(url).then((response) => {
+            const range = response.headers["content-range"];
 
-            const newJSON = json.map(res => {
+            const newJSON = (response.data || []).map(res => {
                 const temp = res._id;
                 delete res._id
                 return { id: temp, ...res }
             })
-
+ 
             return {
                 data: newJSON,
-                total: parseInt(range['content-range'].split('/').pop(), 10),
+                total: parseInt(range.split('/').pop(), 10),
             }
         })
 
