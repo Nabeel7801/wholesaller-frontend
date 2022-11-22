@@ -95,6 +95,18 @@ const UserEdit = () => {
 
                             <Box mt="1em" />
 
+                            <Typography variant="h6" gutterBottom>
+                                Password
+                            </Typography>
+
+                            <TextInput
+                                source="password"
+                                disabled
+                                fullWidth
+                            />
+
+                            <Box mt="1em" />
+
                         </div>
                     </SimpleForm>
                 </Grid>

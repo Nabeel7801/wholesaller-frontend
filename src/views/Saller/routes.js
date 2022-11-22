@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import history from "../history";
-import { Router, Route, Link } from "react-router-dom";
+import { Router, Route, Link, useNavigate } from "react-router-dom";
 import Dashboard from "./Dashboard/Dashboard";
 import Newlisting from "./Addlisting/Newlisting";
 import Createsets from "./Addlisting/Createsets";
@@ -46,7 +45,7 @@ function Copyright() {
 
 function Routes() {
   const classes = useStyles();
-
+  const navigate = useNavigate();
   const [sellerstatus, setsellerstatus] = useState([]);
 
   const fetchsellerstatus = async () => {
@@ -78,11 +77,11 @@ function Routes() {
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
           <Container maxWidth="lg" className={classes.container}>
-            <Router history={history}>
+            <Router>
               {sellerstatus == null ? (
                 <>
                   <button
-                    onClick={() => history.push("/applyseller")}
+                    onClick={() => navigate("/applyseller")}
                     className="verify-styl"
                   >
                     Apply for Saller

@@ -3,8 +3,6 @@ import { fetchUtils } from 'react-admin';
 import { stringify } from 'query-string';
 import axios from 'axios';
 
-const apiUrl = 'https://wholesaller.com/api/admin';
-//const apiUrl = 'http://localhost:5000/api/admin';
 const httpClient = fetchUtils.fetchJson;
 
 const dataProvider = {
@@ -26,7 +24,7 @@ const dataProvider = {
             filter: JSON.stringify(params.filter),
         };
         
-        const url = `${apiUrl}/${resource}?${stringify(query)}`;
+        const url = `${window["apiLocation"]}/admin/${resource}?${stringify(query)}`;
 
         return axios.get(url).then((response) => {
             const range = response.headers["content-range"];
@@ -49,7 +47,7 @@ const dataProvider = {
         if (resource === "subcategories" || resource === "childcategories")
             resource = "categories"
 
-        const url = `${apiUrl}/${resource}/${params.id}`;
+        const url = `${window["apiLocation"]}/admin/${resource}/${params.id}`;
         return httpClient(url).then(({ json }) => {
             const temp = json._id;
             delete json._id;
@@ -66,7 +64,7 @@ const dataProvider = {
             resource = "categories"
 
         const query = { filter: JSON.stringify({ id: params.ids }) };
-        const url = `${apiUrl}/${resource}?${stringify(query)}`;
+        const url = `${window["apiLocation"]}/admin/${resource}?${stringify(query)}`;
 
         return httpClient(url).then(({ json }) => {
             const newJSON = json.map(res => {
@@ -96,7 +94,7 @@ const dataProvider = {
                 [params.target]: params.id,
             }),
         };
-        const url = `${apiUrl}/${resource}?${stringify(query)}`;
+        const url = `${window["apiLocation"]}/admin/${resource}?${stringify(query)}`;
 
         return httpClient(url).then(({ headers, json }) => ({
             data: json.map((res) => ({ ...res, id: res._id })),
@@ -108,9 +106,12 @@ const dataProvider = {
         if (resource === "subcategories" || resource === "childcategories")
             resource = "categories"
 
-        const url = `${apiUrl}/${resource}/${id}`;
+        const url = `${window["apiLocation"]}/admin/${resource}/${id}`;
+        
+        if (!data["image"]) delete data["image"]
+        
         let dataBody;
-        if (data && typeof data.image === 'object') {
+        if (data && data.image) {
             dataBody = new FormData();  
             for (let key in data) {
                 dataBody.append(key, key === "image" ? data[key].rawFile : data[key]);
@@ -118,11 +119,9 @@ const dataProvider = {
         }else {
             dataBody = JSON.stringify(data);
         }
-        
-        return httpClient(url, {
-            method: 'PUT',
-            body: dataBody,
-        }).then(({ json }) => ({ data: { ...json, id: json._id } }))
+        return axios.put(url, dataBody).then(({ data }) => ({ 
+            data: { ...data, id: data._id } 
+        }))
     },
 
     updateMany: (resource, params) => {
@@ -130,7 +129,7 @@ const dataProvider = {
             resource = "categories"
 
         const query = { filter: JSON.stringify({ id: params.ids }) };
-        const url = `${apiUrl}/${resource}?${stringify(query)}`;
+        const url = `${window["apiLocation"]}/admin/${resource}?${stringify(query)}`;
 
         return httpClient(url, {
             method: 'PUT',
@@ -142,9 +141,11 @@ const dataProvider = {
         if (resource === "subcategories" || resource === "childcategories")
             resource = "categories"
         
-        const url = `${apiUrl}/${resource}`;
+        const url = `${window["apiLocation"]}/admin/${resource}`;
+
+        if (!data["image"]) delete data["image"]
+
         let dataBody;
-        
         if (data && data.image) {
             dataBody = new FormData();  
             for (let key in data) {
@@ -153,18 +154,17 @@ const dataProvider = {
         }else {
             dataBody = JSON.stringify(data);
         }
-
-        return httpClient(url, {
-            method: 'POST',
-            body: dataBody
-        }).then(({ json }) => ({ data: { ...data, id: json._id } }))
+        
+        return axios.post(url, dataBody).then(({ data }) => ({ 
+            data: { ...data, id: data._id } 
+        }))
     },
 
     delete: (resource, params) => {
         if (resource === "subcategories" || resource === "childcategories")
             resource = "categories"
 
-        const url = `${apiUrl}/${resource}/${params.id}`;
+        const url = `${window["apiLocation"]}/admin/${resource}/${params.id}`;
 
         return httpClient(url, { method: 'DELETE' })
             .then(({ json }) => ({ data: { ...json, id: json._id } }))
@@ -175,7 +175,7 @@ const dataProvider = {
             resource = "categories"
 
         const query = { filter: JSON.stringify({ id: params.ids }) };
-        const url = `${apiUrl}/${resource}?${stringify(query)}`;
+        const url = `${window["apiLocation"]}/admin/${resource}?${stringify(query)}`;
 
         return httpClient(url, {method: 'DELETE'})
             .then(({ json }) => ({ data: [] }));

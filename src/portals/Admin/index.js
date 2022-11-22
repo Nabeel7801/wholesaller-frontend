@@ -11,12 +11,12 @@ import { Login, Layout } from './layout';
 import authProvider from './authProvider';
 import dataProvider from './dataProvider';
 
-import { Settings } from './pages/settings';
-import { Receivables } from './pages/receivables';
+import Settings from './pages/settings';
 
 import SubCategoryList from './pages/categories/SubCategoryList';
 import ChildCategoryList from './pages/categories/ChildCategoryList';
 
+import banners from './pages/banners'
 import categories from './pages/categories';
 import orders from './pages/orders';
 import invoices from './pages/invoices';
@@ -46,6 +46,8 @@ function AdminApp() {
               options={{ label: 'Orders' }}
           />
 
+          <Resource name="banners" {...banners} />
+
           <Resource name="categories" {...categories} />
           <Resource name="subcategories" list={SubCategoryList} icon={categories.icon} />
           <Resource name="childcategories" list={ChildCategoryList} icon={categories.icon} />
@@ -61,7 +63,6 @@ function AdminApp() {
 
           <CustomRoutes>
             <Route path="/settings" element={<Settings />} />
-            <Route path="/receivables" element={<Receivables />} />
           </CustomRoutes>
 
         </Admin>

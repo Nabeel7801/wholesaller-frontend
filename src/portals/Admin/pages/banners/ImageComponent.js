@@ -1,32 +1,37 @@
 import React, { useEffect } from 'react'
 
-import { ImageInput, ImageField } from 'react-admin';
+import { useRecordContext, ImageInput, ImageField } from 'react-admin';
 import CollectionsIcon from '@mui/icons-material/Collections';
 import { Box } from '@mui/material'
-import { useWatch} from 'react-hook-form';
 
 const ImageComponent = props => {
+    const record = useRecordContext(props);
 
     const myRef= React.createRef();
-    const image = useWatch({name: "image"})
-    
+
     useEffect(() => {
-        const defaultImg = myRef.current.querySelector(".defaultImage");
-        if (typeof image === "string") {
-            defaultImg.src = `${window["apiLocation"]}/file/${image}`
-        }
-    }, [image, myRef])
+        
+        const elem = myRef.current.querySelector(".RaFileInput-preview");
+        if (elem && elem.children.length === 0) {
+            const img = document.createElement('img');
+            img.src = record && record.image ? `${window["apiLocation"]}/file/${record.image}` : `${window["apiLocation"]}/file/default.png`;
+            img.className = "RaImageField-image"
+            elem.appendChild(img)
+        } 
+        
+    }, [myRef, record])
 
     const styles = {
         position: 'relative',
         paddingTop: '20px',
-        width: '14em',
-        height: '15em',
+        height: '200px', 
+        width: '100%',
+        marginBottom: '20px',
 
         '& .defaultImage': {
             display: "block",
             objectFit: "cover",
-            height: '15em', 
+            height: '180px', 
             width: '100%',
             borderRadius: '10px',
             padding: '8px',
@@ -40,14 +45,14 @@ const ImageComponent = props => {
                 top: '0',
                 boxSizing: 'border-box',
                 marginTop: '20px',
-                width: '14em',
-                height: '15em',
-                
+                height: '180px', 
+                width: '100%',
+
                 '& .RaImageField-image': {
                     zIndex: '10',
                     display: "block",
                     objectFit: "cover",
-                    height: '15em', 
+                    height: '180px', 
                     width: '100%',
                     borderRadius: '10px'
                 },
@@ -55,7 +60,7 @@ const ImageComponent = props => {
 
             '& .RaFileInput-removeButton, & .RaFileInput-preview': {
                 width: '100%'
-            }
+            },
 
         },
 
@@ -63,35 +68,23 @@ const ImageComponent = props => {
             position: 'absolute',
             top: '0',
             '& .RaFileInput-dropZone': {
+                backgroundColor: 'transparent',
                 zIndex: '1000',
+                height: '180px',
                 boxSizing: 'border-box',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                height: '15em', 
-                width: '14em',
-                backgroundColor: 'rgba(200, 200, 200, 0.1)',
             },
 
             '& .RaFileInput-dropZone:hover': {
                 backgroundColor: 'rgba(200, 200, 200, 0.4)',
             },
-            '& .RaFileInput-dropZone:focus': {
-                backgroundColor: 'rgba(200, 200, 200, 0.1)',
-            },
-
-            '& .RaFileInput-dropZone svg': {
-                fontSize: '3rem',
-                color: 'rgba(51, 51, 51, 0.005)'
-            },
 
             '& .RaFileInput-dropZone:hover svg': {
+                fontSize: '3rem',
                 color: '#333'
             },
-            '& .RaFileInput-dropZone:focus svg': {
-                color: 'rgba(51, 51, 51, 0.005)'
-            },
-
             '& svg': {
                 color: 'transparent'
             }
@@ -102,20 +95,18 @@ const ImageComponent = props => {
 
         <Box sx={styles}>
             <div ref={myRef}>
-                <img 
-                    className="defaultImage" 
-                    src={`${window["apiLocation"]}/file/product_default.jpg`} 
-                    alt="product" 
+                <img className="defaultImage" alt="default"
+                    src={`${window["apiLocation"]}/file/${record.image}`}
                     onError={({ currentTarget }) => {
                         currentTarget.onerror = null; // prevents looping
-                        currentTarget.src = `${window["apiLocation"]}/file/product_default.jpg`;
+                        currentTarget.src = `${window["apiLocation"]}/file/default.png`;
                     }}
                 />
                 <ImageInput 
-                    label="Attach Product Image" 
+                    label="Attach an Image" 
                     accept="image/*"
                     placeholder={<span className="placeholder"><CollectionsIcon /></span>}
-                    {...props}
+                    source="image"
                 >
                     <ImageField source="src" title="title"/>
                 </ImageInput>

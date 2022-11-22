@@ -22,7 +22,7 @@ const ConfirmDialog = () => {
             </DialogContent>
 
             <DialogActions>
-                <Button color="secondary" variant="contained" onClick={onCancel}>
+                <Button color="info" variant="contained" onClick={onCancel}>
                     Never Mind
                 </Button>
                 <Button color="primary" variant="contained" onClick={() => { onSubmit && onSubmit(); onCancel() }}>

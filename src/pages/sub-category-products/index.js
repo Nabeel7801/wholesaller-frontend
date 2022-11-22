@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { CircularProgress, Container, Paper, Grid } from "@material-ui/core";
+import { CircularProgress, Container, Paper, Grid, Typography } from "@material-ui/core";
 import { useSelector } from "react-redux";
 
 import IndexNavbar from "components/Navbars/IndexNavbar";
@@ -17,7 +17,7 @@ const SubCategoryProducts = () => {
       if (products.length < 1) {
         setNotFound(true);
       }
-    }, 5000);
+    }, 3000);
     window.scrollTo(0, 0);
   }, [products]);
 
@@ -25,41 +25,38 @@ const SubCategoryProducts = () => {
     <div>
 
       { user ? <MainNavbar /> : <IndexNavbar /> }
-      
-      <div className="mt-5">
-        <Container maxWidth="lg">
-          <h2 className="text-3xl font-bold ">Products</h2>
+      <br /> <br />
 
-          <div className="mt-8">
-            {notfound ? 
-              <h2 className="text-4xl flex  justify-center items-center my-10 mx-auto text-center">
-                No products found under this category
-              </h2>
-              :
-              products.length < 1 ?
-                <div
-                  className="flex items-center justify-center "
-                  style={{ minHeight: "300px" }}
-                >
-                  <CircularProgress />
-                </div>
-                :
-                <Paper elevation={0}>
-                  <div className="w-full h-full ">
-                    
-                    <Grid container spacing={3}>
-                      {products.map(product => (
-                        <ProductCards product={product} />
-                      ))}
-                    </Grid>
-                  </div>
-                </Paper>
+      <Container maxWidth="lg">
+        <Typography variant="h6">Products</Typography>
+          <hr /><br />
+
+        {notfound ? 
+          <h2 className="text-3xl flex justify-center items-center mx-auto text-center" style={{color: '#aaa'}}>
+            No products found
+          </h2>
+          :
+          products.length < 1 ?
+            <div
+              className="flex items-center justify-center "
+              style={{ minHeight: "300px" }}
+            >
+              <CircularProgress />
+            </div>
+            :
+            <Paper elevation={0}>
+              <div className="w-full h-full ">
                 
-            }
-
-          </div>
-        </Container>
-      </div>
+                <Grid container spacing={3}>
+                  {products.map(product => (
+                    <ProductCards product={product} />
+                  ))}
+                </Grid>
+              </div>
+            </Paper>
+            
+        }
+      </Container>
     </div>
   );
 };

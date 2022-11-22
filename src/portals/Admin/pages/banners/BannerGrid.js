@@ -1,9 +1,8 @@
 import React from 'react';
-import { EditButton, useListContext, useRedirect } from 'react-admin';
+import { EditButton, useListContext } from 'react-admin';
 import { Grid, Card, CardMedia, CardContent, CardActions, Typography } from '@mui/material';
 
-const CategoryGrid = (props) => {
-    const redirectTo = useRedirect();
+const BannerGrid = () => {
     
     const { data, isLoading } = useListContext();
     if (isLoading) {
@@ -18,16 +17,6 @@ const CategoryGrid = (props) => {
         }
     }
     
-    const redirectToSubCategory = e => {
-        if (props.currPage === "main") {
-            localStorage.setItem('main', JSON.stringify({id: e.target.id, title: e.target.name}))
-            redirectTo(`/subcategories`)
-        }else if (props.currPage === "sub") {
-            localStorage.setItem('sub', JSON.stringify({id: e.target.id, title: e.target.name}))
-            redirectTo(`/childcategories`)
-        }
-    }
-
     return (
         <Grid container spacing={2} sx={{ marginTop: '1em' }}>
             {data.map(record => (
@@ -40,7 +29,7 @@ const CategoryGrid = (props) => {
                             sx={styles}
                             id={record.id}
                             name={record.title}
-                            onClick={redirectToSubCategory}
+                            onClick={() => {}}
                             onError={(e)=>{e.target.onerror = null; e.target.src=`${window["apiLocation"]}/file/default.png`}}
                         />
 
@@ -64,4 +53,4 @@ const CategoryGrid = (props) => {
     );
 };
 
-export default CategoryGrid;
+export default BannerGrid;

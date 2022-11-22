@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DemoFooter from 'components/Footers/DemoFooter.js';
 import IndexNavbar from 'components/Navbars/IndexNavbar.js';
 import Button from '@material-ui/core/Button';
@@ -8,8 +9,10 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import history from 'views/history';
 function ForgetPass() {
+
+  const navigate = useNavigate();
+
   const [email, setemail] = useState('');
   const [ph, setph] = useState('');
   const [pass, setpass] = useState('');
@@ -43,12 +46,10 @@ function ForgetPass() {
   };
 
   const confirmuser = async () => {
-    ///////// alert(tempuserdata.otp)
 
     if (tempuserdata.otp == otp) {
       localStorage.setItem('wholesaller', JSON.stringify(tempuserdata));
-
-      history.push('/');
+      navigate('/')
     } else {
       alert('Wrong Otp');
     }
@@ -71,8 +72,6 @@ function ForgetPass() {
 
       handleClickOpen();
 
-      ///localStorage.setItem("wholesaller", JSON.stringify(json))
-      //history.push("/")
     }
   };
   const handleforgetPass = async () => {

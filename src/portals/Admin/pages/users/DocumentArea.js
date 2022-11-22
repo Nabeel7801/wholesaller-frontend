@@ -1,14 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useRecordContext } from 'react-admin';
 import { Typography, Box } from '@mui/material';
-import { AppContext } from '../../../context';
 import DocumentActions from './DocumentActions'
 
 const DocumentArea = props => {
     const record = useRecordContext(props);
-    
-    const { appState } = useContext(AppContext);
-    const url = appState.ATLAS_URI;
     
     return (
         
@@ -25,7 +21,7 @@ const DocumentArea = props => {
             <Box mt="2em" />
             
             <iframe 
-                src={`${url}/readfiles/${record?.filename}`}
+                src={`${window["apiLocation"]}/readfiles/${record?.filename}`}
                 title="Document"
                 style={{
                     width: '100%',

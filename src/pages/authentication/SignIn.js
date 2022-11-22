@@ -67,10 +67,9 @@ function Signin() {
 
     axios.post(`${window["apiLocation"]}/signin`, {email: email, password: password})
       .then(response => {
-        if (response.data?.length > 0) {
+        if (response.data) {
           toast.success('Logged in successfully!');
-
-          dispatch(setCredentials({ user: response.data[0], token: null }))
+          dispatch(setCredentials({ user: response.data, token: null }))
           
         }else {
           toast.error('Invalid credentials entered');

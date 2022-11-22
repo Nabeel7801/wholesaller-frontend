@@ -109,11 +109,11 @@ export const update = async (resource, { data, id }) => {
             dataBody.append(key, key === "image" ? data[key].rawFile : data[key]);
         }
     }else {
-        dataBody = JSON.stringify(data);
+        dataBody = data;
     }
     
-    return axios.put(url, dataBody).then(({ json }) => ({ 
-        data: { ...json, id: json._id } 
+    return axios.put(url, dataBody).then(({ data }) => ({ 
+        data: { ...data, id: data._id } 
     }))
 };
 

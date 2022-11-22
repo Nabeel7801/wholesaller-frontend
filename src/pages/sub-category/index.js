@@ -3,15 +3,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import axios from "axios";
-import { CircularProgress, Container } from "@material-ui/core";
+import { Container, Card, Grid, Typography } from "@material-ui/core";
 import IndexNavbar from "components/Navbars/IndexNavbar";
 import MainNavbar from "components/Navbars/MainNavbar";
 
-import { updateproductaction } from "views/action/myaction";
 import { populateProducts } from "store/reducers/products";
 
 const SubCategory = () => {
-  const [notfound, setNotFound] = useState(false);
   const [allCategories, setAllCategories] = useState([]);  
 
   const dispatch = useDispatch();
@@ -22,22 +20,22 @@ const SubCategory = () => {
 
   useEffect(() => {
     if (!user) {
-      navigate("/");
+      navigate("/", {replace: true});
     }
 
     axios.post(`${window["apiLocation"]}/categoriesByParent/${parent}`)
     .then(res => {
       const resData = res.data;
-      setAllCategories(resData);
-      if (resData.length < 1) {
-        setTimeout(() => {
-          setNotFound(true);
-        }, 5000);
+      if (resData?.length > 0) {
+        setAllCategories(resData);
+      }else {
+        filterbysubcategory(parent);
       }
+      
     })
-  }, [navigate, parent]);
+  }, [navigate, parent, user]);
 
-  const filterbysubcategory = id => {
+  const filterbychildcategory = id => {
     axios.post(`${window["apiLocation"]}/getProductByChildCategory/${id}`)
       .then(response => {
         dispatch(populateProducts(response.data || []))
@@ -46,65 +44,55 @@ const SubCategory = () => {
       }).catch(err => console.log(err))
  
   };
+  
+  const filterbysubcategory = id => {
+    axios.post(`${window["apiLocation"]}/getProductBySubCategory/${id}`)
+      .then(response => {
+        dispatch(populateProducts(response.data || []))
+        navigate("/products", {replace: true});
 
+      }).catch(err => console.log(err))
+ 
+  };
+  
   return (
     <div>
       <div>
         { user ? <MainNavbar /> : <IndexNavbar /> }
+        <br /> <br />
 
-        <div className="mt-5">
-          <Container maxWidth="lg">
-            <h2 className="text-3xl font-bold ">Categories</h2>
+        <Container maxWidth="lg">
+          <Typography variant="h6">Categories</Typography>
+          <hr /><br />
 
-            <div className="mt-8">
-
-              {notfound ? 
-                <h2 className="text-4xl flex  justify-center items-center my-10 mx-auto text-center">
-                  No Child Category found
-                </h2>
-                :
-                allCategories.length < 1 ? (
-                  <div className="flex  justify-center items-center my-10 mx-auto">
-                    <CircularProgress />
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-3 md:grid-cols-4 gap-2 gap-y-2 md:gap-5 md:gap-x-8">
-                    {allCategories.map((item) => {
-                      return (
-                        // eslint-disable-next-line jsx-a11y/anchor-is-valid
-                        <a
-                          className="cursor-pointer flex flex-col justify-between shadow-xl shadow-gray-800 rounded-xl bg-white p-1 md:p-3 "
-                          onClick={() => filterbysubcategory(item._id)}
-                        >
-                          <div className="flex-1">
-                            <h3
-                              className="break-words text-sm  md:text-base font-bold text-center capitalize"
-                              style={{ color: "#3f51b5" }}
-                            >
-                              {item.title}
-                            </h3>
-                          </div>
-                          <div className="mt-2 md:mt-5">
-                            <img
-                              src={`${window["apiLocation"]}/readfiles/${item.image}`}
-                              alt={item.title}
-                              className="h-52 w-52 mx-auto"
-                              onError={({ currentTarget }) => {
-                                currentTarget.onerror = null; // prevents looping
-                                currentTarget.src = `${window["apiLocation"]}/readfiles/product_default.jpg`;
-                              }}
-                            />
-                          </div>
-                        </a>
-                      );
-                    })}
-                  </div>
-                )
-              }
-              
-            </div>
-          </Container>
-        </div>
+          <Grid container spacing={3}>
+            {allCategories.map((item) => (
+              <Grid item xs={6} sm={4} md={3} lg={2}>
+                <Card
+                  style={{ boxShadow: "0px 3px 16px 0px rgba(200,200,200,0.4)", height: '100%', padding: '10px 0', borderRadius: '10px', cursor: 'pointer' }}
+                  onClick={() => filterbychildcategory(item._id)}
+                >
+                  <img
+                    src={`${window["apiLocation"]}/readfiles/${item.image}`}
+                    alt={item.title}
+                    className="h-52 w-52 mx-auto"
+                    onError={({ currentTarget }) => {
+                      currentTarget.onerror = null; // prevents looping
+                      currentTarget.src = `${window["apiLocation"]}/readfiles/product_placeholder.png`;
+                    }}
+                  />
+                  
+                  <h3
+                    className="break-words text-sm mt-2 md:text-base font-bold text-center capitalize"
+                    style={{ color: "#3f51b5" }}
+                  >
+                    {item.title}
+                  </h3>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
       </div>
     </div>
   );

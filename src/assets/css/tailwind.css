@@ -1,17 +1,32 @@
 /* ------------------ |Custom CSS| ------------------ */
 
-*::-webkit-scrollbar {
+*:not(body)::-webkit-scrollbar {
+    display: none;
+}
+
+body::-webkit-scrollbar {
     width: 8px;
     height: 8px;
 }
 
-*::-webkit-scrollbar-track {
+body::-webkit-scrollbar-track {
     background: #eee;
 }
 
-*::-webkit-scrollbar-thumb {
+body::-webkit-scrollbar-thumb {
     background-color: #888;
     border-radius: 20px;
+}
+
+button:active,
+button:focus {
+    outline: none !important
+}
+
+a:active,
+a:hover,
+a:focus {
+    color: #444 !important;
 }
 
 

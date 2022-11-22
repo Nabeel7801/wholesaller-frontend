@@ -184,70 +184,77 @@ function Cart() {
         {total > 0 ? 
           <Grid container spacing={6}>
 
-            <Grid item lg={8} md={7} sm={12}>
+            <Grid item md={7} sm={12}>
               <Typography variant="h6">Products</Typography>
               <hr /><br />
               {productDetails?.map((product, key) => 
 
-                <Card key={key} sx={{ display: 'flex', position: "relative", alignItems: "center", margin: "20px 2.5%", boxShadow: "0px 3px 16px 0px rgba(200,200,200,0.4)" }}>
-                  <CardMedia
-                    component="img"
-                    sx={{ width: "100px", maxHeight: "125px" }}
-                    image={`${window["apiLocation"]}/readfiles/${product.image}`}
-                    alt="Live from space album cover"
-                  />
-
-                  <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-                    <CardContent sx={{ flex: '1 0 auto' }}>
-                      
-                      <Typography component="div" variant="h5">
-                        {product.reference}
-                      </Typography>
-                      
-                      <Typography variant="subtitle1" color="text.secondary" component="div">
-                        ₹{product.cart_info?.buy_price}/Unit &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; Quantity: {product.cart_info?.quantity}
-                      </Typography>
-
-                    </CardContent>
-
-                    <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'flex-end', pl: 1, pb: 1 }}>
-                      
-                      <div className="input-group" style={{height: "40px", width: "140px", margin: "0 20px 0 0"}}>
-                        <div className="input-group-prepend">
-                          <button 
-                            type="button"
-                            className="btn btn-outline-primary px-2" 
-                            style={{padding: '0 0.25rem', height: '40px', backgroundColor: 'rgba(81, 203, 206, 0.4'}}
-                            onClick={() => changeQuantity(key, false)}
-                          >
-                            <Remove />
-                          </button>
-                        </div>
-                        
-                        <input 
-                          disabled
-                          type="text" 
-                          className="form-control" 
-                          style={{textAlign: 'center'}}
-                          value={product.cart_info?.quantity}
-                        />
-                        
-                        <div className="input-group-prepend">
-                          <button 
-                            type="button"
-                            className="btn btn-outline-primary px-2" 
-                            style={{padding: '0 0.25rem', height: '40px', backgroundColor: 'rgba(81, 203, 206, 0.4'}}
-                            onClick={() => changeQuantity(key, true)}
-                          >
-                              <Add />
-                          </button>
-                        </div>
-                      </div>
-
-                    </Box>
-                  </Box>
+                <Card key={key} sx={{ position: "relative", margin: "20px 2.5%", boxShadow: "0px 3px 16px 0px rgba(200,200,200,0.4)" }}>
                   
-                  <IconButton aria-label="delete" onClick={() => removeFromCart(key)} sx={{color: "#C32147", position: "absolute", top: "10px", right: "10px"}}>
+                  <Grid container>
+                    <Grid item xs={3} sx={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                      <CardMedia
+                        component="img"
+                        sx={{ width: "90%", maxHeight: "125px" }}
+                        image={`${window["apiLocation"]}/readfiles/${product.image}`}
+                        alt="Product"
+                      />
+                    </Grid>
+
+                    <Grid item xs={9}>
+                      <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+                        <CardContent sx={{ flex: '1 0 auto' }}>
+                          
+                          <Typography component="div" variant="h5">
+                            {product.reference}
+                          </Typography>
+                          
+                          <Typography variant="subtitle1" color="text.secondary" component="div">
+                            ₹{product.cart_info?.buy_price}/Unit &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; Quantity: {product.cart_info?.quantity}
+                          </Typography>
+
+                        </CardContent>
+
+                        <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'flex-end', pl: 1, pb: 1 }}>
+                          
+                          <div className="input-group" style={{height: "40px", width: "140px", margin: "0 20px 0 0"}}>
+                            <div className="input-group-prepend">
+                              <button 
+                                type="button"
+                                className="btn btn-outline-primary px-2" 
+                                style={{padding: '0 0.25rem', height: '40px', backgroundColor: 'rgba(81, 203, 206, 0.4'}}
+                                onClick={() => changeQuantity(key, false)}
+                              >
+                                <Remove />
+                              </button>
+                            </div>
+                            
+                            <input 
+                              disabled
+                              type="text" 
+                              className="form-control" 
+                              style={{textAlign: 'center'}}
+                              value={product.cart_info?.quantity}
+                            />
+                            
+                            <div className="input-group-prepend">
+                              <button 
+                                type="button"
+                                className="btn btn-outline-primary px-2" 
+                                style={{padding: '0 0.25rem', height: '40px', backgroundColor: 'rgba(81, 203, 206, 0.4'}}
+                                onClick={() => changeQuantity(key, true)}
+                              >
+                                  <Add />
+                              </button>
+                            </div>
+                          </div>
+
+                        </Box>
+                      </Box>
+                    </Grid>
+                  </Grid>
+
+                  <IconButton aria-label="delete" onClick={() => removeFromCart(key)} style={{color: "#C32147", position: "absolute", top: "10px", right: "10px"}}>
                     <Delete sx={{fontSize: "1.2em"}}/>
                   </IconButton>
 
@@ -257,7 +264,7 @@ function Cart() {
 
             </Grid>
 
-            <Grid item lg={4} md={5} sm={12}>
+            <Grid item md={5} sm={12}>
                 <Typography variant="h6" align="center">Order Summary</Typography>
                 <hr />
                 <Grid container>
@@ -409,7 +416,9 @@ function Cart() {
 
           </Grid>
         :
-          <h4> No Items </h4>
+          <h2 className="text-3xl flex justify-center items-center mx-auto text-center" style={{color: '#aaa'}}>
+            Cart Empty
+          </h2>
         }
 
         <DemoFooter />

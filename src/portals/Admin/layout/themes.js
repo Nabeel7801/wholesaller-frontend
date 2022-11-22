@@ -8,6 +8,10 @@ export const darkTheme = {
         secondary: {
             main: '#FBBA72',
         },
+        neutral: {
+          main: '#64748B',
+          contrastText: '#fff',
+        },
         mode: 'dark', // Switching the dark mode on is a single property value change.
     },
     sidebar: {
@@ -49,6 +53,10 @@ export const lightTheme = {
         },
         background: {
             default: '#fcfcfe',
+        },
+        neutral: {
+          main: '#64748B',
+          contrastText: '#fff',
         },
         mode: 'light',
     },

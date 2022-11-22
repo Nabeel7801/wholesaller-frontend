@@ -1,14 +1,10 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useEffect } from 'react'
 
 import { useRecordContext, ImageInput, ImageField } from 'react-admin';
 import CollectionsIcon from '@mui/icons-material/Collections';
 import { Box } from '@mui/material'
 
-import { AppContext } from '../../../context';
-
 const ImageComponent = props => {
-    const { appState } = useContext(AppContext);
-    const url = appState.ATLAS_URI;
     const record = useRecordContext(props);
 
     const myRef= React.createRef();
@@ -18,12 +14,12 @@ const ImageComponent = props => {
         const elem = myRef.current.querySelector(".RaFileInput-preview");
         if (elem && elem.children.length === 0) {
             const img = document.createElement('img');
-            img.src = record && record.image ? `${url}/file/${record.image}` : `${url}/file/default.png`;
+            img.src = record && record.image ? `${window["apiLocation"]}/file/${record.image}` : `${window["apiLocation"]}/file/default.png`;
             img.className = "RaImageField-image"
             elem.appendChild(img)
         } 
         
-    }, [url, myRef, record])
+    }, [window["apiLocation"], myRef, record])
 
     const styles = {
         position: 'relative',
@@ -100,10 +96,10 @@ const ImageComponent = props => {
         <Box sx={styles}>
             <div ref={myRef}>
                 <img className="defaultImage" alt="default"
-                    src={`${url}/file/${record.image}`}
+                    src={`${window["apiLocation"]}/file/${record.image}`}
                     onError={({ currentTarget }) => {
                         currentTarget.onerror = null; // prevents looping
-                        currentTarget.src = `${url}/file/default.png`;
+                        currentTarget.src = `${window["apiLocation"]}/file/default.png`;
                     }}
                 />
                 <ImageInput 

@@ -1,8 +1,7 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useTheme, useMediaQuery, Box, ImageList, ImageListItem, ImageListItemBar } from '@mui/material';
 import { useCreatePath, useListContext, ReferenceField, TextField } from 'react-admin';
 import { Link } from 'react-router-dom';
-import { AppContext } from '../../../context';
 
 const GridList = () => {
     const { isLoading } = useListContext();
@@ -41,8 +40,6 @@ const LoadingGridList = () => {
 };
 
 const LoadedGridList = () => {
-    const { appState } = useContext(AppContext);
-    const url = appState.ATLAS_URI;
 
     const { data } = useListContext();
     const cols = useColsForWidth();
@@ -66,8 +63,8 @@ const LoadedGridList = () => {
                     }}
                 >
                     <img alt=""
-                        src={`${url}/file/${record.image}`}
-                        onError={(e)=>{e.target.onerror = null; e.target.src=`${url}/file/product_default.jpg`}}/>
+                        src={`${window["apiLocation"]}/file/${record.image}`}
+                        onError={(e)=>{e.target.onerror = null; e.target.src=`${window["apiLocation"]}/file/product_default.jpg`}}/>
                     <ImageListItemBar
                         title={record.reference}
                         subtitle={

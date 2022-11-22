@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -25,8 +26,6 @@ import BarChartIcon from "@material-ui/icons/BarChart";
 import LayersIcon from "@material-ui/icons/Layers";
 
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-
-import history from "../../history";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -110,6 +109,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Navsidebar() {
   const classes = useStyles();
+  const navigate = useNavigate();
   const [open, setOpen] = React.useState(true);
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -124,11 +124,11 @@ function Navsidebar() {
     setSelectedIndex(index);
 
     if (index === 0) {
-      history.push("/saller/producttype");
+      navigate("/saller/producttype");
     } else if (index === 1) {
-      history.push("/saller/producttype");
+      navigate("/saller/producttype");
     } else if (index === 2) {
-      history.push("/saller/Viewlisting");
+      navigate("/saller/Viewlisting");
     }
   };
 
@@ -161,7 +161,7 @@ function Navsidebar() {
           >
             Seller Panel
           </Typography>
-          <IconButton color="inherit" onClick={() => history.push("/")}>
+          <IconButton color="inherit" onClick={() => navigate("/")}>
             <ExitToAppIcon />
           </IconButton>
         </Toolbar>
@@ -208,7 +208,7 @@ function Navsidebar() {
             </ListItemIcon>
             <ListItemText primary="View Listing" />
           </ListItem>
-          <ListItem button onClick={() => history.push("/saller/ordersaller")}>
+          <ListItem button onClick={() => navigate("/saller/ordersaller")}>
             <ListItemIcon>
               <BarChartIcon />
             </ListItemIcon>
@@ -220,7 +220,7 @@ function Navsidebar() {
             </ListItemIcon>
             <ListItemText primary="Integrations" />
           </ListItem>
-          <ListItem button onClick={() => history.push("/saller/payments")}>
+          <ListItem button onClick={() => navigate("/saller/payments")}>
             <ListItemIcon>
               <LayersIcon />
             </ListItemIcon>

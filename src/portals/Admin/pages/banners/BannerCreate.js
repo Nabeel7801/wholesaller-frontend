@@ -1,36 +1,41 @@
 import React from 'react';
-import { CreateBase, TextInput, SimpleForm, required, useRedirect, useNotify, SaveButton, useRefresh, useCreate } from 'react-admin';
+import { CreateBase, TextInput, AutocompleteArrayInput, ReferenceInput, SimpleForm, required, useGetList, useRedirect, useNotify, SaveButton, useRefresh, useCreate } from 'react-admin';
 import { Box, Stack, IconButton, Typography, Toolbar } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import ImageComponent from './ImageComponent';
 
-const CategoryCreate = ({ onCancel, ...props }) => {
+const BannerCreate = ({ onCancel, ...props }) => {
 
     const req = required();
     const redirect = useRedirect();
     const notify = useNotify();
     const refresh = useRefresh()
     const [create] = useCreate();
+    
+    const { data: categories } = useGetList('categories', {
+        pagination: { page: 1, perPage: 100 },
+        sort: { field: 'title', order: 'ASC' },
+        filter: {},
+    });
 
-    const redirectTo = "/" + (props.type === 'Main' ? "categories" : `${props.type?.toLowerCase()}categories`);
- 
-    const saveCategory = (data) => {
-        create('categories', { data }, { 
+    const saveBanner = (data) => {
+        create('banners', { data }, { 
             mutationMode: 'optimistic',
             onSuccess: () => {
                 // Now Deliver
-                redirect(redirectTo);
-                notify("Category Added Successfully")
+                redirect("/banners");
+                notify("Banner Added Successfully")
                 refresh()
 
             },
             onError: () => {
-                notify('Error: Category not added', {
+                notify('Error: Banner not added', {
                     type: 'warning',
                 });
             },
         })
     }
+
     return (
         <CreateBase 
             {...props}
@@ -39,9 +44,8 @@ const CategoryCreate = ({ onCancel, ...props }) => {
                 
                 <Stack direction="row" p={2}>
                     <Typography variant="h6" flex="1">
-                        {`Create ${props.type}-Category`}
+                        {`Create Banner`}
                     </Typography>
-
                     <IconButton onClick={onCancel} size="small">
                         <CloseIcon />
                     </IconButton>
@@ -49,18 +53,29 @@ const CategoryCreate = ({ onCancel, ...props }) => {
 
                 <SimpleForm
                     sx={{ pt: 0, pb: 0 }}
-                    record={{parent: props.parent}}
-                    onSubmit={saveCategory}
                     toolbar={
                         <Toolbar sx={{ backgroundColor: 'background.paper', minHeight: { sm: 0 } }}>
                             <SaveButton />
                         </Toolbar>
                     }
+                    record={{}}
+                    defaultValues={{ title: "", categories: [] }}
+                    sanitizeEmptyValues
+                    onSubmit={saveBanner}
                 >
                     <TextInput
                         source="title"
                         fullWidth
                         validate={req}
+                    />
+                
+                    <AutocompleteArrayInput 
+                        fullWidth 
+                        label="Filter Categories" 
+                        source="categories"
+                        optionText="title" 
+                        optionVal="id"
+                        choices={categories || []}
                     />
 
                     <ImageComponent source="image" />
@@ -71,4 +86,4 @@ const CategoryCreate = ({ onCancel, ...props }) => {
     );
 };
 
-export default CategoryCreate;
+export default BannerCreate;

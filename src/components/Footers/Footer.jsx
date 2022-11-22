@@ -23,7 +23,7 @@ const Footer = () => {
     <div>
       {total > 0 && (
         <footer className="fixed right-0 left-0 bottom-0 z-999">
-          <div className="text-base bg-white text-white px-4 pt-4 border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
+          <div className="text-base bg-white text-white px-2 pt-4 border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
             <div className=" my-paper rounded-lg px-4 py-2 py-1 flex items-center justify-between">
               <div className="flex items-center font-medium">
                 <span>{total}</span>

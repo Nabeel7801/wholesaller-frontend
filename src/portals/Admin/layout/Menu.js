@@ -3,16 +3,7 @@ import { useState } from 'react';
 import Box from '@mui/material/Box';
 
 import { DashboardMenuItem, MenuItemLink, useSidebarState, Authenticated } from 'react-admin';
-
-import InventoryIcon from '@mui/icons-material/Inventory';
-import ContentPasteIcon from '@mui/icons-material/ContentPaste';
-import AddchartIcon from '@mui/icons-material/Addchart';
-import OrderIcon from '@mui/icons-material/AttachMoney'
-import InvoiceIcon from '@mui/icons-material/LibraryBooks'
-import ProductIcon from '@mui/icons-material/Collections'
-import StoreIcon from '@mui/icons-material/Store';
-import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import PersonPinIcon from '@mui/icons-material/PersonPin';
+import { Inventory, ContentPaste, Addchart, AttachMoney, LibraryBooks, Collections, Store, PeopleAlt, PersonPin, PermDataSetting, ViewCarouselOutlined } from '@mui/icons-material';
 
 import SubMenu from './SubMenu';
 
@@ -21,7 +12,8 @@ const Menu = ({ dense = false }) => {
         menuCatalog: true,
         menuOrders: true,
         menuPayments: true,
-        menuAccounts: true
+        menuAccounts: true,
+        menuSettings: true
     });
     const [open] = useSidebarState();
 
@@ -50,21 +42,21 @@ const Menu = ({ dense = false }) => {
                     handleToggle={() => handleToggle('menuCatalog')}
                     isOpen={state.menuCatalog}
                     name="Catalog"
-                    icon={<ContentPasteIcon />}
+                    icon={<ContentPaste />}
                     dense={dense}
                 >
                     <MenuItemLink
                         to="/products"
                         state={{ _scrollToTop: true }}
                         primaryText="Products"
-                        leftIcon={<InventoryIcon />}
+                        leftIcon={<Inventory />}
                         dense={dense}
                     />
                     <MenuItemLink
                         to="/categories"
                         state={{ _scrollToTop: true }}
                         primaryText="Categories"
-                        leftIcon={<AddchartIcon />}
+                        leftIcon={<Addchart />}
                         dense={dense}
                     />
                 </SubMenu>
@@ -73,21 +65,21 @@ const Menu = ({ dense = false }) => {
                     handleToggle={() => handleToggle('menuOrders')}
                     isOpen={state.menuOrders}
                     name="Orders"
-                    icon={<OrderIcon />}
+                    icon={<AttachMoney />}
                     dense={dense}
                 >
                     <MenuItemLink
                         to="/orders"
                         state={{ _scrollToTop: true }}
                         primaryText="Orders"
-                        leftIcon={<OrderIcon />}
+                        leftIcon={<AttachMoney />}
                         dense={dense}
                     />
                     <MenuItemLink
                         to="/invoices"
                         state={{ _scrollToTop: true }}
                         primaryText="Invoices"
-                        leftIcon={<InvoiceIcon />}
+                        leftIcon={<LibraryBooks />}
                         dense={dense}
                     />
                 </SubMenu>
@@ -96,14 +88,14 @@ const Menu = ({ dense = false }) => {
                     handleToggle={() => handleToggle('menuPayments')}
                     isOpen={state.menuPayments}
                     name="Payments"
-                    icon={<OrderIcon />}
+                    icon={<AttachMoney />}
                     dense={dense}
                 >
                     <MenuItemLink
                         to="/payments"
                         state={{ _scrollToTop: true }}
                         primaryText="Payments"
-                        leftIcon={<OrderIcon />}
+                        leftIcon={<AttachMoney />}
                         dense={dense}
                     />
                 </SubMenu>
@@ -112,32 +104,47 @@ const Menu = ({ dense = false }) => {
                     handleToggle={() => handleToggle('menuAccounts')}
                     isOpen={state.menuAccounts}
                     name="Accounts"
-                    icon={<ProductIcon />}
+                    icon={<Collections />}
                     dense={dense}
                 >
                     <MenuItemLink
                         to="/users"
                         state={{ _scrollToTop: true }}
                         primaryText="Users"
-                        leftIcon={<PersonPinIcon />}
+                        leftIcon={<PersonPin />}
                         dense={dense}
                     />
                     <MenuItemLink
                         to="/customers"
                         state={{ _scrollToTop: true }}
                         primaryText="Customers"
-                        leftIcon={<PeopleAltIcon />}
+                        leftIcon={<PeopleAlt />}
                         dense={dense}
                     />
                     <MenuItemLink
                         to="/warehouses"
                         state={{ _scrollToTop: true }}
                         primaryText="Warehouses"
-                        leftIcon={<StoreIcon />}
+                        leftIcon={<Store />}
                         dense={dense}
                     />
                 </SubMenu>
 
+                <SubMenu
+                    handleToggle={() => handleToggle('menuSettings')}
+                    isOpen={state.menuSettings}
+                    name="Settings"
+                    icon={<PermDataSetting />}
+                    dense={dense}
+                >
+                    <MenuItemLink
+                        to="/banners"
+                        state={{ _scrollToTop: true }}
+                        primaryText="Banners"
+                        leftIcon={<ViewCarouselOutlined />}
+                        dense={dense}
+                    />
+                </SubMenu>
             </Box>
         </Authenticated>
     );

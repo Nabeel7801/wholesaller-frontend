@@ -1,23 +1,19 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { useNotify, useRecordContext } from 'react-admin';
 import { Button, Box } from '@mui/material';
 import ThumbUp from '@mui/icons-material/ThumbUp';
 import ThumbDown from '@mui/icons-material/ThumbDown';
-import { AppContext } from '../../../context';
 
 const DocumentActions = () => {
     const notify = useNotify();
     const record = useRecordContext();
     const [isLoading, setLoading] = useState(false);
     const [status, setStatus] = useState(record.status);
-    
-    const { appState } = useContext(AppContext);
-    const url = appState.ATLAS_URI;
 
     const approve = () => {
         setLoading(true);
-        axios.put(`${url}/updateStatus/${record.document}`, { status: 'verified' })
+        axios.put(`${window["apiLocation"]}/updateStatus/${record.document}`, { status: 'verified' })
         .then(() => {
             setLoading(false);
             notify('Document Approved!', {
@@ -34,7 +30,7 @@ const DocumentActions = () => {
 
     const reject = () => {
         setLoading(true);
-        axios.put(`${url}/updateStatus/${record.document}`, { status: 'unverified' })
+        axios.put(`${window["apiLocation"]}/updateStatus/${record.document}`, { status: 'unverified' })
         .then(() => {
             setLoading(false);
             notify('Document Rejected!', {

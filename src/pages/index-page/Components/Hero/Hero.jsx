@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './Hero.module.css';
 import { Container, Box, Button, Grid } from '@material-ui/core';
 import roundBlue from '../../img/fs-round-blue.svg';
@@ -9,13 +10,15 @@ import electronics from '../../img/hero icons/electronics.webp';
 import food from '../../img/hero icons/food.webp';
 import clothing from '../../img/hero icons/clothing.webp';
 import footwear from '../../img/hero icons/footwear.webp';
-import history from '../../../../../src/views/history';
 import HeroSub from './HeroSub';
 
 // animation library\
 import Fade from 'react-reveal/Fade';
 
 const Hero = () => {
+
+  const navigate = useNavigate();
+
   const heroData = [
     {
       img: clothing,
@@ -92,7 +95,7 @@ const Hero = () => {
                           size='large'
                           className={styles.btnPrimary}
                           fullWidth={true}
-                          onClick={() => history.push('/signin')}
+                          onClick={() => navigate('/signin')}
                         >
                           Start buying
                         </Button>
@@ -105,7 +108,7 @@ const Hero = () => {
                           size='large'
                           className={styles.btnSecondary}
                           fullWidth={true}
-                          onClick={() => history.push('/signin')}
+                          onClick={() => navigate('/signin')}
                         >
                           Start Selling
                         </Button>

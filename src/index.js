@@ -5,11 +5,13 @@ import { Provider } from "react-redux";
 import { PersistGate } from 'redux-persist/integration/react';
 import { ToastContainer } from "react-toastify";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { ThemeProvider } from '@material-ui/core/styles';
 
 import App from "App";
 import Portals from "portals"
 import { store, persistor } from 'store';
-import ThemeSelector from "utils/ThemeSelector"
+import { theme } from "assets/themes/AppTheme";
+import ThemeSelector from "utils/ThemeSelector";
 import Loader from 'components/Loader';
 
 // styles
@@ -31,12 +33,25 @@ createRoot(document.getElementById("root"))
       <Provider store={store}>
         <QueryClientProvider client={queryClient}>
           <PersistGate loading={<Loader />} persistor={persistor}>
-            <BrowserRouter>
-              <App />
-            </BrowserRouter>
+            <ThemeProvider theme={theme}>
+              <BrowserRouter>
+                <App />
+              </BrowserRouter>
+            </ThemeProvider>
           </PersistGate>
         </QueryClientProvider>
-        <ToastContainer />
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss={false}
+          draggable
+          pauseOnHover={false}
+          theme="light"
+        />
       </Provider>
 
     </>

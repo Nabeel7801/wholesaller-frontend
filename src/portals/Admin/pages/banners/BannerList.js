@@ -3,33 +3,31 @@ import { TopToolbar, CreateButton, ExportButton, List } from 'react-admin';
 import { Box, Drawer } from '@mui/material';
 import { matchPath, useLocation, useNavigate } from 'react-router-dom';
  
-import CategoryEdit from './CategoryEdit';
-import CategoryCreate from './CategoryCreate'
-import CategoryGrid from './CategoryGrid'
+import BannerEdit from './BannerEdit';
+import BannerCreate from './BannerCreate'
+import BannerGrid from './BannerGrid'
 
-const CategoryList = () => {
+const BannerList = () => {
 
     const location = useLocation();
     const navigate = useNavigate();
 
     const handleClose = useCallback(() => {
-        navigate('/categories');
+        navigate('/banners');
     }, [navigate]);
 
-    const createMatch = matchPath('/categories/create', location.pathname);
-    const editMatch = !createMatch && matchPath('/categories/:id', location.pathname);
+    const createMatch = matchPath('/banners/create', location.pathname);
+    const editMatch = !createMatch && matchPath('/banners/:id', location.pathname);
 
     return (
         <Box display="flex">
 
             <List
-                title="Main Categories"
-                resource="categories"
-                sort={{ field: 'name', order: 'ASC' }}
+                title="Banners"
+                resource="banners"
+                sort={{ field: 'title', order: 'ASC' }}
                 perPage={25}
-                empty={false}
                 component="div"
-                filter={{parent: "none"}}
                 sx={{
                     flexGrow: 1,
                     transition: (theme) =>
@@ -37,11 +35,12 @@ const CategoryList = () => {
                             duration: theme.transitions.duration.enteringScreen,
                         }),
                 }}
+                empty={false}
                 actions={false}
             >
                 <>
                     <ListActions />
-                    <CategoryGrid currPage="main"/>
+                    <BannerGrid />
                 </>
             </List>
 
@@ -53,16 +52,13 @@ const CategoryList = () => {
                 sx={{ zIndex: 100 }}
             >
                 {editMatch ? 
-                    <CategoryEdit
+                    <BannerEdit
                         id={editMatch.params.id}
                         onCancel={handleClose}
-                        type="Main"
                     />
                     :
-                    <CategoryCreate
+                    <BannerCreate
                         onCancel={handleClose}
-                        type="Main"
-                        parent="none"
                     />
                 }
             </Drawer>
@@ -78,4 +74,4 @@ const ListActions = () => (
     </TopToolbar>
 );
 
-export default CategoryList;
+export default BannerList;

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 
 import { useNavigate } from 'react-router-dom';
@@ -9,15 +9,12 @@ import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import { Form, required, TextInput, useNotify } from 'react-admin';
 
 import Box from '@mui/material/Box';
-import { AppContext } from '../../context';
 
 const Login = () => {
     const [loading, setLoading] = useState(false);
 
     const notify = useNotify();
     const navigate = useNavigate();
-    const { appState, setAppState } = useContext(AppContext);
-    const url = appState.ATLAS_URI;
 
     const showError = (error) => {
         setLoading(false);
@@ -41,13 +38,11 @@ const Login = () => {
         setLoading(true);
         const { username, password } = auth;
 
-        axios.post(`${url}/admin/authenticateUser/${username}/${password}`)
+        axios.post(`${window["apiLocation"]}/admin/authenticateUser/${username}/${password}`)
         .then(res => {
             if (res.data && res.data.length > 0) {
                 const user = res.data[0];
                 localStorage.setItem('admin_user', JSON.stringify(user))
-
-                setAppState(prevState => ({ ...prevState, user }))
                 navigate("/")
 
             }else {

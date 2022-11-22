@@ -12,7 +12,6 @@ import MainNavbar from "components/Navbars/MainNavbar";
 import IndexNavbar from "components/Navbars/IndexNavbar.js";
 import DemoFooter from "components/Footers/DemoFooter.js";
 import Footer from "components/Footers/Footer";
-import ZoomImage from "components/Images/ZoomImage";
 import { addItem } from "store/reducers/cart";
 
 const useStyles = makeStyles((theme) => ({
@@ -20,19 +19,51 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
         marginTop: 40,
     },
-    paper: {
-        padding: theme.spacing(2),
-        margin: "auto",
-        maxWidth: 500,
+    largeText: {
+        fontSize: '1.8rem',
+        [theme.breakpoints.up('sm')]: {
+            fontSize: '2.2rem',
+        },
+        [theme.breakpoints.up('md')]: {
+            fontSize: '2.6rem',
+        },
+        [theme.breakpoints.up('lg')]: {
+            fontSize: '3.0rem',
+        },
     },
-    appBar: {
-        position: "relative",
+    mediumText: {
+        fontSize: '1.6rem',
+        [theme.breakpoints.up('sm')]: {
+            fontSize: '1.8rem',
+        },
+        [theme.breakpoints.up('md')]: {
+            fontSize: '2.2rem',
+        },
+        [theme.breakpoints.up('lg')]: {
+            fontSize: '2.6rem',
+        },
     },
-    title: {
-        marginLeft: theme.spacing(2),
-        color: "white",
-        flex: 1,
+    smallText: {
+        fontSize: '1.4rem',
+        [theme.breakpoints.up('sm')]: {
+            fontSize: '1.8rem',
+        },
+        [theme.breakpoints.up('md')]: {
+            fontSize: '2.0rem',
+        },
+        [theme.breakpoints.up('lg')]: {
+            fontSize: '2.2rem',
+        },
     },
+    image: {
+        width: '100%',
+        margin: 'auto',
+        maxWidth: '450px',
+        [theme.breakpoints.down('sm')]: {
+            maxWidth: '300px',
+            maxHeight: '350px'
+        }
+    }
 }));
 
 let action = "AddToCart";
@@ -92,23 +123,35 @@ function ProductDetails() {
                     <Container maxWidth="lg">
                         <div className={classes.root}>
                             <Grid container spacing={6}>
-                                <Grid item lg={5} md={6} xs={12} sm={12} style={{maxWidth: "350px"}}>
+                                <Grid item lg={5} md={6} xs={12} sm={12}>
 
-                                    <ZoomImage src={`${window["apiLocation"]}/readfiles/${productDetails.image}`} />
+                                    <img 
+                                        alt="default"
+                                        className={classes.image}
+                                        src={`${window["apiLocation"]}/file/${productDetails.image}`}
+                                        onError={({ currentTarget }) => {
+                                            currentTarget.onerror = null; // prevents looping
+                                            currentTarget.src = `${window["apiLocation"]}/file/product_default.jpg`;
+                                        }}
+                                    />
+
 
                                 </Grid>
 
                                 <Grid item lg={7} md={6} xs={12} sm={12} style={{ display: 'flex', flexDirection: 'column' }}>
 
-                                    <Typography variant="h3" className="my-2">{productDetails.reference}</Typography>
+                                    <Typography 
+                                        style={{ fontSize: { xs:'1.6rem', md:'3.0rem' } }}
+                                        variant="h3"
+                                        className= {classes.largeText}
+                                    >
+                                        {productDetails.reference}
+                                    </Typography>
 
                                     <Typography 
                                         variant="h4" 
-                                        className="my-3"
-                                        style={{
-                                            fontWeight: 'bold',
-                                            color: '#3F51B5'
-                                        }}
+                                        className= {classes.mediumText}
+                                        style={{ fontWeight: 'bold', color: '#3F51B5', margin: '0.6rem 0' }}
                                     >
                                         Rs: {productDetails.price}
                                     </Typography>

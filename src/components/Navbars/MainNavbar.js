@@ -134,45 +134,46 @@ function MainNavbar() {
     { heading: "Buyers" },
     {
       icon: BookmarkBorder,
-      text: "your orders",
+      text: "orders history",
       link: "/order-history",
     },
     {
       icon: CompareArrowsOutlined,
-      text: "your return",
+      text: "your returns",
       link: "/returns",
     },
+
     { heading: "Sellers" },
-    {
-      icon: ShoppingBasketOutlined,
-      text: "listing",
-      link: "/saller/producttype",
-    },
     {
       icon: NoteAddOutlined,
       text: "become a seller",
       link: "/applyseller",
     },
-    {
-      icon: ListAltOutlined,
-      text: "view listing",
-      link: "/saller/Viewlisting",
-    },
-    {
-      icon: FormatListNumberedOutlined,
-      text: "Orders",
-      link: "/saller/ordersaller",
-    },
-    {
-      icon: PaymentOutlined,
-      text: "my payment",
-      link: "/saller/payments",
-    },
-    {
-      icon: CompareArrowsOutlined,
-      text: "returns in seller area",
-      link: "/saller/returns",
-    },
+    // {
+    //   icon: ShoppingBasketOutlined,
+    //   text: "listing",
+    //   link: "/saller/producttype",
+    // },
+    // {
+    //   icon: ListAltOutlined,
+    //   text: "view listing",
+    //   link: "/saller/Viewlisting",
+    // },
+    // {
+    //   icon: FormatListNumberedOutlined,
+    //   text: "Orders",
+    //   link: "/saller/ordersaller",
+    // },
+    // {
+    //   icon: PaymentOutlined,
+    //   text: "my payment",
+    //   link: "/saller/payments",
+    // },
+    // {
+    //   icon: CompareArrowsOutlined,
+    //   text: "returns in seller area",
+    //   link: "/saller/returns",
+    // },
     { heading: "General" },
     {
       icon: InfoOutlined,
@@ -206,31 +207,28 @@ function MainNavbar() {
   const renderMenu = (
     <Menu
       anchorEl={menuOpen}
-      anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      id="primary-search-account-menu"
-      keepMounted
-      transformOrigin={{ vertical: "top", horizontal: "right" }}
       open={Boolean(menuOpen)}
       onClose={() => setMenuOpen(null)}
+      transformOrigin={{ vertical: "top", horizontal: "right" }}
+      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      keepMounted
     >
-      <MenuItem onClick={() => navigate("/account")}>Account</MenuItem>
-      <MenuItem onClick={() => navigate("/saller")}>Seller area</MenuItem>
-      <MenuItem onClick={() => navigate("/returns")}>Returns</MenuItem>
+      <MenuItem onClick={() => navigate("/account")}>Account Details</MenuItem>
+      <MenuItem onClick={() => navigate("/order-history")}>Order History</MenuItem>
+      <MenuItem onClick={() => navigate("/returns")}>Your Returns</MenuItem>
 
       {sellerStatus === null && (
         <MenuItem onClick={() => navigate("/applyseller")}>
-          Apply For Seller{" "}
+          Apply For Seller
         </MenuItem>
       )}
 
+      {/* <MenuItem onClick={() => navigate("/saller")}>Seller area</MenuItem> */}
       <MenuItem onClick={() => navigate("/support")}>Support</MenuItem>
-      <MenuItem onClick={() => navigate("/order-history")}>Order</MenuItem>
 
       <MenuItem onClick={logout}>Logout</MenuItem>
     </Menu>
   );
-
-  const profileImg = user.profileImg;
 
   // Mobile Menu
   const renderMobileMenu = (
@@ -254,17 +252,21 @@ function MainNavbar() {
                 className="flex items-center px-4 py-5 mb-6"
                 style={{ minHeight: "100px", backgroundColor: "#3f51b5" }}
               >
-                <img
-                  alt="User profile"
-                  className="rounded-lg w-16 h-16"
-                  src={profileImg === null ? require("assets/img/avatar.png") : profileImg}
+                <img 
+                  alt="default"
+                  style={{ width: '40px', height: '40px', borderRadius: '20px' }}
+                  src={`${window["apiLocation"]}/file/${user.avatar}`}
+                  onError={({ currentTarget }) => {
+                      currentTarget.onerror = null; // prevents looping
+                      currentTarget.src = `${window["apiLocation"]}/file/avatar.png`;
+                  }}
                 />
 
                 <div className="ml-3  text-white">
-                  <p className="text-sm font-bold mb-1">
-                    {user.firstName}
+                  <p className="font-bold mb-1" style={{ fontSize: '1.0rem' }}>
+                    {user.first_name} {user.last_name}
                   </p>
-                  <p className="text-sm">
+                  <p style={{ fontSize: '0.8rem' }}>
                     {user.phone}
                   </p>
                 </div>
@@ -370,9 +372,6 @@ function MainNavbar() {
 
               <IconButton
                 edge="end"
-                aria-label="account of current user"
-                aria-controls="primary-search-account-menu-mobile"
-                aria-haspopup="true"
                 onClick={(e) => setMenuOpen(e.currentTarget)}
                 className={classes.iconButton}
                 color="inherit"
@@ -384,9 +383,6 @@ function MainNavbar() {
 
             <div className={classes.sectionMobile}>
               <IconButton
-                aria-label="show more"
-                aria-controls="primary-search-account-menu-mobile"
-                aria-haspopup="true"
                 onClick={() => setMobileMenuOpen(true)}
                 color="inherit"
               >

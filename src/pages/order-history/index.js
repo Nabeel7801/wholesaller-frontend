@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { getList } from "dataProvider";
+import { getList, update } from "dataProvider";
 import IndexNavbar from "components/Navbars/IndexNavbar";
 import DemoFooter from "components/Footers/DemoFooter";
 import { Tabs, Tab } from "@material-ui/core";
@@ -33,7 +33,7 @@ function OrderHistory() {
       setCurrentOrders((orders || []).filter(order => order.status === 'pending'))
       setPreviousOrders((orders || []).filter(order => order.status !== 'pending'))
     })
-  }, [])
+  }, [user._id])
   
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -51,6 +51,16 @@ function OrderHistory() {
       navigate("/cart");
     }
     
+  }
+
+  const cancelOrder = (cardID) => {
+    confirm("Are you sure you want to cancel this order? This Action cannot be undone.", () => {
+      update("admin/orders", {data: { status: "cancelled" }, id: cardID})
+      .then(({ data }) => {
+        setCurrentOrders(currentOrders.filter(order => order.id !== cardID))
+        setPreviousOrders([data, ...previousOrders])
+      })
+    })
   }
 
   return (
@@ -73,14 +83,22 @@ function OrderHistory() {
 
         <TabPanel value={value} index={0}>
           
-          {currentOrders?.map(order => <OrderCard card={order} reorderHandler={reorderHandler} />)}
-
+          {currentOrders?.map(order => <OrderCard card={order} reorderHandler={reorderHandler} cancelOrder={cancelOrder} />)}
+          {currentOrders.length === 0 && 
+            <h5 className="text-3xl flex justify-center items-center mx-auto mt-5 text-center" style={{color: '#aaa'}}>
+              No Active Orders
+            </h5>
+          } 
         </TabPanel>
 
         <TabPanel value={value} index={1} sx={{backgroundColor: '#eee'}}>
           
           {previousOrders?.map(order => <OrderCard card={order} reorderHandler={reorderHandler} />)}
-
+          {previousOrders.length === 0 && 
+            <h5 className="text-3xl flex justify-center items-center mx-auto mt-5 text-center" style={{color: '#aaa'}}>
+              No Previous Orders
+            </h5>
+          } 
         </TabPanel>
 
       </div>
