@@ -11,8 +11,8 @@ const dataProvider = {
         if (resource === "subcategories" || resource === "childcategories")
             resource = "categories"
 
-        const { page, perPage } = params.pagination;
-        let { field, order } = params.sort;
+        const { page, perPage } = params.pagination || {page: 1, perPage: 1000};
+        let { field, order } = params.sort || {field: "_id", order: "DESC"};
         if (field === "id") 
             field = "_id";
 
@@ -21,7 +21,7 @@ const dataProvider = {
         const query = {
             sort: JSON.stringify({[field]: order}),
             range: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),
-            filter: JSON.stringify(params.filter),
+            filter: JSON.stringify(params.filter || {}),
         };
         
         const url = `${window["apiLocation"]}/admin/${resource}?${stringify(query)}`;
@@ -110,14 +110,12 @@ const dataProvider = {
         
         if (!data["image"]) delete data["image"]
         
-        let dataBody;
+        let dataBody = data || {};
         if (data && data.image) {
             dataBody = new FormData();  
             for (let key in data) {
                 dataBody.append(key, key === "image" ? data[key].rawFile : data[key]);
             }
-        }else {
-            dataBody = JSON.stringify(data);
         }
         return axios.put(url, dataBody).then(({ data }) => ({ 
             data: { ...data, id: data._id } 
@@ -145,14 +143,12 @@ const dataProvider = {
 
         if (!data["image"]) delete data["image"]
 
-        let dataBody;
+        let dataBody = data || {};
         if (data && data.image) {
             dataBody = new FormData();  
             for (let key in data) {
                 dataBody.append(key, key === "image" ? data[key].rawFile : data[key]);
             }
-        }else {
-            dataBody = JSON.stringify(data);
         }
         
         return axios.post(url, dataBody).then(({ data }) => ({ 

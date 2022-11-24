@@ -176,6 +176,12 @@ const TabbedDatagrid = () => {
                                 
                                 <TextField source="reference" />
                                 
+                                <CustomerReferenceField 
+                                    label="Company" 
+                                    outlet={true}
+                                    link={false}
+                                />
+                                
                                 <CustomerReferenceField />
                                 
                                 <ReferenceField

@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Datagrid, DateField, DateInput, EmailField, List, NullableBooleanInput, NumberField, SearchInput } from 'react-admin';
 import { useMediaQuery } from '@mui/material';
 
+import CompanyField from '../../components/CompanyField';
 import FullNameField from '../../components/FullNameField';
 import ColoredNumberField from './ColoredNumberField';
 import MobileGrid from './MobileGrid';
@@ -37,7 +38,9 @@ const CustomerList = () => {
                         },
                     }}
                 >
-                    <FullNameField label="Customer"/>
+                    <CompanyField label="Company" />
+
+                    <FullNameField label="Customer" />
 
                     <EmailField source="email" />
                     

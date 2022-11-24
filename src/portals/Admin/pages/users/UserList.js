@@ -5,6 +5,7 @@ import { useMediaQuery } from '@mui/material';
 import MobileGrid from './MobileGrid';
 import StatusField from './StatusField'
 import FullNameField from '../../components/FullNameField'
+import CompanyField from '../../components/CompanyField'
 
 const UserList = () => {
     const isXsmall = useMediaQuery(theme =>
@@ -30,7 +31,7 @@ const UserList = () => {
                         },
                     }}
                 >
-                    <TextField label="Outlet" source="outlet_name" sx={{fontWeight: 'bold', color: '#555'}}/>
+                    <CompanyField label="Company" />
 
                     <FullNameField label="Name"/>
 

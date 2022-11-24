@@ -102,14 +102,12 @@ export const update = async (resource, { data, id }) => {
         resource = "categories"
 
     const url = `${window["apiLocation"]}/${resource}/${id}`;
-    let dataBody;
-    if (data && typeof data.image === 'object') {
+    let dataBody = data || {};
+    if (data && data.image) {
         dataBody = new FormData();  
         for (let key in data) {
             dataBody.append(key, key === "image" ? data[key].rawFile : data[key]);
         }
-    }else {
-        dataBody = data;
     }
     
     return axios.put(url, dataBody).then(({ data }) => ({ 
@@ -134,15 +132,12 @@ export const create = async (resource, { data }) => {
         resource = "categories"
     
     const url = `${window["apiLocation"]}/${resource}`;
-    let dataBody;
-    
+    let dataBody = data || {};
     if (data && data.image) {
         dataBody = new FormData();  
         for (let key in data) {
             dataBody.append(key, key === "image" ? data[key].rawFile : data[key]);
         }
-    }else {
-        dataBody = JSON.stringify(data);
     }
 
     return axios.post(url, dataBody).then(({ json }) => ({ 

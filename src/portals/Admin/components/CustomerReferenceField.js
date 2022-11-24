@@ -2,10 +2,11 @@ import * as React from 'react';
 import { ReferenceField } from 'react-admin';
 
 import FullNameField from './FullNameField';
+import CompanyField from './CompanyField';
 
-const CustomerReferenceField = props => (
+const CustomerReferenceField = ({outlet, ...props}) => (
     <ReferenceField source="customer_id" reference="customers" {...props}>
-        <FullNameField />
+        {outlet ? <CompanyField /> : <FullNameField />}
     </ReferenceField>
 );
 
