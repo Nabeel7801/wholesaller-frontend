@@ -1,7 +1,8 @@
 import * as React from 'react';
+import { Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom'
 
-import { Create, FormTab, TabbedForm, useDataProvider } from 'react-admin';
+import { Create, FormTab, TabbedForm, useDataProvider, CheckboxGroupInput } from 'react-admin';
 import { RichTextInput } from 'ra-input-rich-text';
 
 import { ProductEditDetails } from './ProductEditDetails';
@@ -36,6 +37,31 @@ const ProductCreate = () => {
                 >
                     <ProductEditDetails />
                 </FormTab>
+    
+                <FormTab
+                    label="Tags"
+                    path="tags"
+                    sx={{ maxWidth: '40em' }}
+                >
+                    <Typography variant="h6" gutterBottom>Tags</Typography>
+
+                    <CheckboxGroupInput 
+                        label=""
+                        row={false} 
+                        source="tags"
+                        sx={{ 
+                            padding: '10px', 
+                            '& .MuiFormControlLabel-root': { marginBottom: '15px' }, 
+                            '& .MuiFormControlLabel-label': { fontSize: '1.2rem' } 
+                        }} 
+                        choices={[
+                            { id: 'TopBestSellers', name: 'Top Best Sellers' },
+                            { id: 'NewArrivals', name: 'New Arrivals' },
+                            { id: 'TopRatedProducts', name: 'Top Rated Products' }
+                        ]} 
+                    />
+                </FormTab>
+
                 <FormTab
                     label="Description"
                     path="description"

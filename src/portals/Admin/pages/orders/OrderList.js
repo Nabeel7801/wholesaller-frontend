@@ -45,6 +45,7 @@ const orderFilters = [
 
 const tabs = [
     { id: 'pending', name: 'pending' },
+    { id: 'dispatched', name: 'dispatched' },
     { id: 'delivered', name: 'delivered' },
     { id: 'cancelled', name: 'cancelled' },
 ];
@@ -55,6 +56,12 @@ const useGetTotals = filterValues => {
         pagination: { perPage: 1, page: 1 },
         sort: { field: 'id', order: 'ASC' },
         filter: { ...filterValues, status: 'pending' },
+    });
+
+    const { total: totalDispatched } = useGetList('orders', {
+        pagination: { perPage: 1, page: 1 },
+        sort: { field: 'id', order: 'ASC' },
+        filter: { ...filterValues, status: 'dispatched' },
     });
 
     const { total: totalDelivered } = useGetList('orders', {
@@ -71,6 +78,7 @@ const useGetTotals = filterValues => {
 
     return {
         pending: totalPending,
+        dispatched: totalDispatched,
         delivered: totalDelivered,
         cancelled: totalCancelled,
     };
@@ -90,6 +98,7 @@ const TabbedDatagrid = () => {
         theme.breakpoints.down('sm')
     );
     const [pending, setPending] = useState([]);
+    const [dispatched, setDispatched] = useState([]);
     const [delivered, setDelivered] = useState([]);
     const [cancelled, setCancelled] = useState([]);
     const totals = useGetTotals(filterValues);
@@ -101,6 +110,9 @@ const TabbedDatagrid = () => {
         switch (filterValues.status) {
             case 'pending':
                 setPending(data);
+                break;
+            case 'dispatched':
+                setDispatched(data);
                 break;
             case 'delivered':
                 setDelivered(data);
@@ -129,9 +141,11 @@ const TabbedDatagrid = () => {
     const selectedData =
         filterValues.status === 'pending'
             ? pending
-            : filterValues.status === 'delivered'
-                ? delivered
-                : cancelled;
+            : filterValues.status === 'dispatched'
+                ? dispatched
+                : filterValues.status === 'delivered'
+                    ? delivered
+                    : cancelled;
 
     return (
         <Fragment>
@@ -158,131 +172,51 @@ const TabbedDatagrid = () => {
 
             <Divider />
             
-            {isXSmall ? (
-                <ListContextProvider
-                    value={{ ...listContext, data: selectedData }}
-                >
+            <ListContextProvider
+                value={{ ...listContext, ids: selectedData }}
+            >
+                {isXSmall ? 
                     <MobileGrid data={selectedData} />
-                </ListContextProvider>
-            ) : (
-                <>
-                    {filterValues.status === 'pending' && (
-                        <ListContextProvider
-                            value={{ ...listContext, ids: pending }}
+                    :
+                    <Datagrid optimized rowClick="edit">
+                        
+                        <DateField source="date" showTime />
+                        
+                        <TextField source="reference" />
+                        
+                        <CustomerReferenceField 
+                            label="Company" 
+                            outlet={true}
+                            link={false}
+                        />
+                        
+                        <CustomerReferenceField />
+                        
+                        <ReferenceField
+                            source="customer_id"
+                            reference="customers"
+                            link={false}
+                            label="Address"
                         >
-                            <Datagrid optimized rowClick="edit">
-                                
-                                <DateField source="date" showTime />
-                                
-                                <TextField source="reference" />
-                                
-                                <CustomerReferenceField 
-                                    label="Company" 
-                                    outlet={true}
-                                    link={false}
-                                />
-                                
-                                <CustomerReferenceField />
-                                
-                                <ReferenceField
-                                    source="customer_id"
-                                    reference="customers"
-                                    link={false}
-                                    label="Address"
-                                >
-                                    <AddressField />
-                                </ReferenceField>
+                            <AddressField />
+                        </ReferenceField>
 
-                                <NbItemsField />
+                        <NbItemsField />
 
-                                <NumberField
-                                    source="total"
-                                    options={{
-                                        style: 'currency',
-                                        currency: 'INR',
-                                    }}
-                                    sx={{ fontWeight: 'bold' }}
-                                />
+                        <NumberField
+                            source="total"
+                            options={{
+                                style: 'currency',
+                                currency: 'INR',
+                            }}
+                            sx={{ fontWeight: 'bold' }}
+                        />
 
-                            </Datagrid>
-                        </ListContextProvider>
-                    )}
+                    </Datagrid>
+                }
 
-                    {filterValues.status === 'delivered' && (
-                        <ListContextProvider
-                            value={{ ...listContext, ids: delivered }}
-                        >
-                            <Datagrid rowClick="edit">
-                                <DateField source="date" showTime />
-
-                                <TextField source="reference" />
-                                
-                                <CustomerReferenceField />
-                                
-                                <ReferenceField
-                                    source="customer_id"
-                                    reference="customers"
-                                    link={false}
-                                    label="Address"
-                                >
-                                    <AddressField />
-                                </ReferenceField>
-
-                                <NbItemsField />
-
-                                <NumberField
-                                    source="total"
-                                    options={{
-                                        style: 'currency',
-                                        currency: 'INR',
-                                    }}
-                                    sx={{ fontWeight: 'bold' }}
-                                />
-
-                                <BooleanField
-                                    source="returned"
-                                    sx={{ mt: -0.5, mb: -0.5 }}
-                                />
-                            </Datagrid>
-                        </ListContextProvider>
-                    )}
-
-                    {filterValues.status === 'cancelled' && (
-                        <ListContextProvider
-                            value={{ ...listContext, ids: cancelled }}
-                        >
-                            <Datagrid rowClick="edit">
-                                <DateField source="date" showTime />
-
-                                <TextField source="reference" />
-
-                                <CustomerReferenceField />
-
-                                <ReferenceField
-                                    source="customer_id"
-                                    reference="customers"
-                                    link={false}
-                                    label="Address"
-                                >
-                                    <AddressField />
-                                </ReferenceField>
-
-                                <NbItemsField />
-
-                                <NumberField
-                                    source="total"
-                                    options={{
-                                        style: 'currency',
-                                        currency: 'INR',
-                                    }}
-                                    sx={{ fontWeight: 'bold' }}
-                                />
-                                
-                            </Datagrid>
-                        </ListContextProvider>
-                    )}
-                </>
-            )}
+            </ListContextProvider>
+            
         </Fragment>
     );
 };

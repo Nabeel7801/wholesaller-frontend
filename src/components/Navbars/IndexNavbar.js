@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
   container: { padding: "12px 0" },
 
   menuButton: {
+    fontWeight: 700,
     marginRight: theme.spacing(2),
   },
   title: {
@@ -44,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     outline: '0',
+    fontWeight: 500,
     border: 'none',
     '&:focus': {
       outline: '0',
@@ -172,31 +174,40 @@ function IndexNavbar() {
       <AppBar position="static" className={classes.appstyl}>
         <Container className={classes.container}>
           <Toolbar variant="dense">
-            <Typography
-              className={classes.menuButton}
-              edge="start"
-              class="cursor-pointer text-white font-semibold"
-              onClick={() => navigate("/")}
-              color="inherit"
-              aria-label="open drawer"
-            >
-              Wholesaller
-            </Typography>
 
-            <div className={classes.grow} />
-            <div className={classes.sectionDesktop}>
-              <Button color="inherit" className={classes.button} onClick={() => navigate("/signin")}>
-                Sign In
-              </Button>
-              <Button color="inherit" className={classes.button} onClick={() => navigate("/signup")}>
-                Sign Up
-              </Button>
-            </div>
+            <div className="flex w-full justify-between items-center">
+              <Typography
+                className={classes.menuButton}
+                class="cursor-pointer text-white font-semibold m-0"
+                onClick={() => navigate("/")}
+                color="inherit"
+                aria-label="open drawer"
+              >
+                Wholesaller
+              </Typography>
 
-            <div className={classes.sectionMobile}>
-              <Button color="inherit" className={classes.button} href="/signin">
-                Sign In
-              </Button>
+              <div className={classes.sectionDesktop}>
+                <Button color="inherit" className={classes.button} onClick={() => navigate("/signin")}>
+                  Sign In
+                </Button>
+
+                <Button color="inherit" className={classes.button} onClick={() => navigate("/signup")}>
+                  Sign Up
+                </Button>
+              </div>
+
+              <div className={classes.sectionMobile}>
+                {window.location.pathname === "/signin" &&
+                  <Button color="inherit" className={classes.button} onClick={() => navigate("/signup")}>
+                    Sign Up
+                  </Button>
+                }
+                {window.location.pathname === "/signup" &&
+                  <Button color="inherit" className={classes.button} onClick={() => navigate("/signin")}>
+                    Sign In
+                  </Button>
+                }
+              </div>
             </div>
 
           </Toolbar>

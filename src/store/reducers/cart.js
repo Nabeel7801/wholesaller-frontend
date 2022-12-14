@@ -19,13 +19,13 @@ const cart = createSlice({
 
         addItem(state, action) {
             const { productDetails, quantity } = action.payload;
-            const exist = state.items.filter(c => c.product_id === productDetails._id)[0];
+            const exist = state.items.filter(c => c.product_id === productDetails.id)[0];
             if (exist) {
-                state.items = state.items.map(c => c.product_id === productDetails._id ? {...c, quantity: (c.quantity+quantity)} : c)
+                state.items = state.items.map(c => c.product_id === productDetails.id ? {...c, quantity: (c.quantity+quantity)} : c)
 
             }else {
                 const newObj = {
-                    product_id: productDetails._id,
+                    product_id: productDetails.id,
                     buy_price: productDetails.price,
                     quantity: quantity
                 }
@@ -34,7 +34,7 @@ const cart = createSlice({
         },
 
         removeItem(state, action) {
-            state.items = state.items.filter(item => item._id !== action.payload._id)
+            state.items = state.items.filter(item => item.id !== action.payload.id)
         },
 
         clearCart(state, action) {

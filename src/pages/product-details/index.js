@@ -6,7 +6,7 @@ import axios from "axios";
 import { toast } from 'react-toastify';
 import { makeStyles } from "@material-ui/core/styles";
 
-import { Container, Typography, Grid, Button } from "@material-ui/core";
+import { Container, Typography, Grid, Card, Button } from "@material-ui/core";
 
 import MainNavbar from "components/Navbars/MainNavbar";
 import IndexNavbar from "components/Navbars/IndexNavbar.js";
@@ -55,18 +55,25 @@ const useStyles = makeStyles((theme) => ({
             fontSize: '2.2rem',
         },
     },
+    imageBox: {
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: '5px'
+    },
     image: {
-        width: '100%',
-        margin: 'auto',
-        maxWidth: '450px',
+        width: '80%',
+        height: '400px',
+        objectFit: "contain",
         [theme.breakpoints.down('sm')]: {
-            maxWidth: '300px',
-            maxHeight: '350px'
+            width: '200px',
+            height: '225px',
+            margin: 0
         }
     }
 }));
-
-let action = "AddToCart";
 
 function ProductDetails() {
 
@@ -75,12 +82,14 @@ function ProductDetails() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    let action = "AddToCart";
+
     const [quantity, setQuantity] = useState(1)
     const [currentstatus, setcurrentstatus] = useState("");
 
     const user = useSelector((state) => state.auth.user)
     const productDetails = useSelector((state) => 
-        state.products.list.filter(product => product._id === productID)[0] || {}
+        state.products.list.filter(product => product.id === productID)[0] || {}
     )
 
     useEffect(() => {
@@ -122,39 +131,43 @@ function ProductDetails() {
                 <div className="pb-40">
                     <Container maxWidth="lg">
                         <div className={classes.root}>
-                            <Grid container spacing={6}>
+                            <Grid container spacing={4}>
                                 <Grid item lg={5} md={6} xs={12} sm={12}>
-
-                                    <img 
-                                        alt="default"
-                                        className={classes.image}
-                                        src={`${window["apiLocation"]}/file/${productDetails.image}`}
-                                        onError={({ currentTarget }) => {
-                                            currentTarget.onerror = null; // prevents looping
-                                            currentTarget.src = `${window["apiLocation"]}/file/product_default.jpg`;
-                                        }}
-                                    />
+                                    
+                                    <Card className={classes.imageBox}>
+                                        <img 
+                                            alt="default"
+                                            className={classes.image}
+                                            src={`${window["apiLocation"]}/file/${productDetails.image}`}
+                                            onError={({ currentTarget }) => {
+                                                currentTarget.onerror = null; // prevents looping
+                                                currentTarget.src = `${window["apiLocation"]}/file/product_default.jpg`;
+                                            }}
+                                        />
+                                    </Card>
 
 
                                 </Grid>
 
                                 <Grid item lg={7} md={6} xs={12} sm={12} style={{ display: 'flex', flexDirection: 'column' }}>
+                                    
+                                    <div className="flex justify-between sm:block">
+                                        <Typography 
+                                            style={{ fontSize: { xs:'1.6rem', md:'3.0rem' }, marginBottom: '0.6rem' }}
+                                            variant="h3"
+                                            className= {classes.largeText}
+                                        >
+                                            {productDetails.reference}
+                                        </Typography>
 
-                                    <Typography 
-                                        style={{ fontSize: { xs:'1.6rem', md:'3.0rem' } }}
-                                        variant="h3"
-                                        className= {classes.largeText}
-                                    >
-                                        {productDetails.reference}
-                                    </Typography>
-
-                                    <Typography 
-                                        variant="h4" 
-                                        className= {classes.mediumText}
-                                        style={{ fontWeight: 'bold', color: '#3F51B5', margin: '0.6rem 0' }}
-                                    >
-                                        Rs: {productDetails.price}
-                                    </Typography>
+                                        <Typography 
+                                            variant="h4" 
+                                            className= {classes.mediumText}
+                                            style={{ fontWeight: 'bold', color: '#3F51B5', marginBottom: '0.6rem' }}
+                                        >
+                                            ₹&nbsp;{productDetails.price}
+                                        </Typography>
+                                    </div>
 
                                     <Typography variant="h6" className="my-1">HSN: {productDetails.hsn_code}</Typography>
 
@@ -194,7 +207,7 @@ function ProductDetails() {
                                                     color="primary"
                                                     onClick={() => {action = "AddToCart"; return true;}} 
                                                 >
-                                                Add to Cart
+                                                    Add to Cart
                                                 </Button>
                                             </Grid>
 
@@ -207,7 +220,7 @@ function ProductDetails() {
                                                     color="primary"
                                                     onClick={() => {action = "BuyNow"; return true;}} 
                                                 >
-                                                Buy Now
+                                                    Buy Now
                                                 </Button>
                                             </Grid>
                                         

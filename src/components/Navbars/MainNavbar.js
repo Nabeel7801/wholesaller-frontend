@@ -331,17 +331,19 @@ function MainNavbar() {
         <Container className={classes.container} >
           <Toolbar variant="dense">
 
-            <IconButton
-              className={classes.iconButton}
-              onClick={() => navigate(-1)}
-            >
-              <div>
-                <ArrowBackIos
-                  style={{ transform: "translate(2px, -2px)", width: "18px" }}
-                />
-              </div>
-            </IconButton>
-
+            {window.location.pathname !== "/" &&
+              <IconButton
+                className={classes.iconButton}
+                onClick={() => navigate(-1)}
+              >
+                <div>
+                  <ArrowBackIos
+                    style={{ transform: "translate(2px, -2px)", width: "18px" }}
+                  />
+                </div>
+              </IconButton>
+            }
+            
             <Typography
               className={classes.menuButton}
               edge="start"

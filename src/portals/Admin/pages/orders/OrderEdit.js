@@ -8,8 +8,7 @@ import { Card, CardContent, Box, Grid, Typography, Link, Button } from '@mui/mat
 import Basket from './Basket';
 import Totals from './Totals';
 
-import SendIcon from '@mui/icons-material/Send';
-import GppBadIcon from '@mui/icons-material/GppBad';
+import { Send, GppBad, AssignmentReturned } from '@mui/icons-material';
 
 const OrderEdit = () => (
     <Edit title={<OrderTitle />} component="div">
@@ -91,6 +90,25 @@ const OrderForm = () => {
         }
     );
 
+    const [dispatch, { isLoading: loadingDispatch }] = useUpdate(
+        'orders',
+        { id: record.id, data: { status: 'dispatched' }, previousData: record },
+        {
+            mutationMode: 'undoable',
+            onSuccess: () => {
+                notify('Order Dispatched!', {
+                    type: 'info',
+                    undoable: true,
+                });
+            },
+            onError: () => {
+                notify('Error: Order not dispatched', {
+                    type: 'warning',
+                });
+            },
+        }
+    );
+
     const [deliver, { isLoading: loadingDeliver }] = useUpdate(
         'orders',
         { id: record.id, data: { status: 'delivered' }, previousData: record },
@@ -163,7 +181,7 @@ const OrderForm = () => {
                                     </Grid>
 
                                     <Grid item xs={6}>
-                                        {record?.status !== 'pending' && 
+                                        {record?.status === 'delivered' && 
                                             <Box mt={2}>
                                                 <BooleanInput
                                                     row={true}
@@ -175,7 +193,6 @@ const OrderForm = () => {
 
                                 </Grid>
 
-                                
                                 {record?.status === 'pending' && 
                                     <>
                                         <Spacer />
@@ -183,15 +200,39 @@ const OrderForm = () => {
                                             <Grid item xs={6} sm={6} md={6}>
                                                 <Button 
                                                     variant="outlined"
-                                                    startIcon={<GppBadIcon />}
-                                                    disabled={loadingDeliver || loadingCancel || loadingInvoice}
+                                                    startIcon={<GppBad />}
+                                                    disabled={loadingDispatch || loadingCancel}
                                                     onClick={() => cancel()}
                                                 >Cancel</Button>
                                             </Grid>
                                             <Grid item xs={6} sm={6} md={6}>
                                                 <Button 
                                                     variant="contained"
-                                                    endIcon={<SendIcon />}
+                                                    startIcon={<Send />}
+                                                    disabled={loadingDispatch || loadingCancel}
+                                                    onClick={() => dispatch()}
+                                                >Dispatch</Button>
+                                            </Grid>
+                                        </Grid>
+                                    </>
+                                }
+
+                                {record?.status === 'dispatched' && 
+                                    <>
+                                        <Spacer />
+                                        <Grid container>
+                                            <Grid item xs={6} sm={6} md={6}>
+                                                <Button 
+                                                    variant="outlined"
+                                                    startIcon={<AssignmentReturned />}
+                                                    disabled={loadingDeliver || loadingCancel || loadingInvoice}
+                                                    onClick={() => cancel()}
+                                                >Returned</Button>
+                                            </Grid>
+                                            <Grid item xs={6} sm={6} md={6}>
+                                                <Button 
+                                                    variant="contained"
+                                                    endIcon={<Send />}
                                                     disabled={loadingDeliver || loadingCancel || loadingInvoice}
                                                     onClick={() => createInvoiceAndDeliver()}
                                                 >Deliver</Button>

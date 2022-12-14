@@ -8,6 +8,12 @@ import ImageComponent from './ImageComponent';
 
 const BannerEdit = ({ onCancel, ...props }) => {
         
+    const { data: mainCategories } = useGetList('categories', {
+        pagination: { page: 1, perPage: 100 },
+        sort: { field: 'title', order: 'ASC' },
+        filter: { parent: "none" },
+    });
+
     const { data: categories } = useGetList('categories', {
         pagination: { page: 1, perPage: 100 },
         sort: { field: 'title', order: 'ASC' },
@@ -39,8 +45,17 @@ const BannerEdit = ({ onCancel, ...props }) => {
                     
                     <AutocompleteArrayInput 
                         fullWidth 
-                        label="Filter Categories" 
+                        label="Show in Categories" 
                         source="categories"
+                        optionText="title" 
+                        optionVal="id"
+                        choices={mainCategories || []}
+                    />
+
+                    <AutocompleteArrayInput 
+                        fullWidth 
+                        label="Filter Categories Products" 
+                        source="redirect_categories"
                         optionText="title" 
                         optionVal="id"
                         choices={categories || []}

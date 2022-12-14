@@ -3,15 +3,38 @@ import { DateTime } from 'luxon';
 import { NumericFormat } from 'react-number-format';
 import PropTypes from 'prop-types';
 import { Box, Typography, Grid, Button, Chip as ChipMUI } from "@material-ui/core";
-import { LocalMall } from '@material-ui/icons';
+import { LocalMall, AlarmOn, QueryBuilder, CancelOutlined, CheckCircleOutlined } from '@material-ui/icons';
 
-function Chip({label}) {
+function Chip({ label, style={} }) {
     const text = label.length > 0 ? label[0].toUpperCase() + label.slice(1) : "";
     const deliveredStyle = { backgroundColor: 'green', color: '#fff' };
+    const dispatchedStyle = { backgroundColor: '#ffae42', color: '#fff' };
+
+    const getAvatar = () => {
+        const styles = { color: "#fff" }
+        switch (label) {
+            case 'pending':
+                return <QueryBuilder style={styles} />;
+
+            case 'dispatched':
+                return <AlarmOn style={styles} />;
+
+            case 'delivered':
+                return <CheckCircleOutlined style={styles} />;
+
+            case 'cancelled':
+                return <CancelOutlined style={styles} />;
+
+            default:
+                return <QueryBuilder style={styles} />;
+        }
+    }
+
     return (
         <ChipMUI 
-            style={{ ...label === 'delivered' ? deliveredStyle : {}, padding: "3px 7px", marginTop: "20px" }}
+            style={{ ...label === 'delivered' ? deliveredStyle : label === 'dispatched' ? dispatchedStyle : {}, padding: "3px 7px", marginBottom: "5px", fontWeight: 700, ...style }}
             label={text}
+            avatar={getAvatar()}
         />
     )
 }
@@ -28,8 +51,12 @@ function OrderCard(props) {
         }}>
             {matches => (
                 <Box key={card._id} p={2} sx={{ marginTop: '20px', boxShadow: "0px 3px 8px 0px rgba(150,150,150,0.5)" }}>
+                    
+                    
+                    {matches.small && <Chip label={card.status} />}
                     <Grid container>
                         <Grid item xs={9}>
+                            
                             <Typography variant={matches.small ? 'h6' : 'h5'} style={{textTransform: 'none'}}>
                                 Order Id: {card.reference}
                             </Typography>
@@ -46,25 +73,28 @@ function OrderCard(props) {
                                 {card.basket.length > maxItems && <b>{card.basket.length - maxItems} more item{card.basket.length - maxItems > 1 ? "s" : ""}...</b>}
                             </Typography>
 
-                            <Button onClick={() => reorderHandler(card.basket)} color="primary" style={{ padding: '5px 2em', marginTop: '10px', borderRadius: '4px', border: '1px solid #ddd' }}>
-                                <LocalMall /> &nbsp;&nbsp;Reorder
-                            </Button>
-
-                            {cancelOrder &&
-                                <Button onClick={() => cancelOrder(card.id)} color="info" variant="contained" style={{ padding: '5px 2em', marginTop: '10px', marginLeft: '10px', borderRadius: '4px' }}>
-                                    Cancel
-                                </Button>
-                            }
                         </Grid>
 
                         <Grid item xs={3}>
-                            <Typography variant="body1" className="text-bold" color="primary">
+                            <Typography variant={matches.small ? "body1" : "h6"} style={{ fontWeight: 700 }} color="primary">
                                 <NumericFormat value={(card.total || 0).toFixed(2)} displayType="text" thousandSeparator prefix="₹" />
                             </Typography>
 
-                            <Chip label={card.status} />
+                            {(matches.medium || matches.large) && 
+                                <Chip label={card.status} style={{ marginTop: "20px" }}
+                            />}
                         </Grid>
                     </Grid>
+
+                    <Button onClick={() => reorderHandler(card.basket)} color="primary" variant="contained" style={{ marginTop: '10px', borderRadius: '4px' }}>
+                        <LocalMall /> &nbsp;&nbsp;Reorder
+                    </Button>
+
+                    {cancelOrder && card.status === 'pending' &&
+                        <Button onClick={() => cancelOrder(card.id)} color="secondary" variant="outlined" style={{ marginTop: '10px', marginLeft: '10px', borderRadius: '4px' }}>
+                            Cancel
+                        </Button>
+                    }
 
                 </Box>
             )}

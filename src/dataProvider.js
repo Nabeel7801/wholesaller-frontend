@@ -32,7 +32,7 @@ export const getList = async (resource, params={}) => {
 
         return {
             data: newJSON,
-            total: parseInt(range.split('/').pop(), 10),
+            total: parseInt(range?.split('/').pop(), 10),
         }
     })
 

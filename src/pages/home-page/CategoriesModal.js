@@ -1,9 +1,8 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Slide, Dialog, DialogContent } from '@mui/material';
+import { Slide, Dialog, DialogContent, Grid, Radio } from '@mui/material';
 
-import Filtercards from "pages/home-page/Filtercards";
-import { toggleModal } from "store/reducers/categories";
+import { selectCategory, toggleModal } from "store/reducers/categories";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -12,8 +11,13 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const CategoriesModal = () => {
 
     const dispatch = useDispatch();
-    const { modalOpen, mainCategories } = useSelector((state) => state.categories)
-  
+    const { modalOpen, mainCategories, selected } = useSelector((state) => state.categories)
+    
+    const handleClick = ({id, title}) => {
+        dispatch(selectCategory({ id, title }))
+        dispatch(toggleModal());
+    };
+
     return (
         
         <Dialog
@@ -50,11 +54,30 @@ const CategoriesModal = () => {
 
                 <hr />
 
-                <Filtercards
-                    allcategory={mainCategories}
-                    toggleModal={() => dispatch(toggleModal())}
-                />
+                {mainCategories.map((category) => (
+                    <Grid container spacing={1} className="my-1 cursor-pointer" onClick={() => handleClick(category)}>
+                        <Grid item xs={3}>
+                            <img
+                                src={`${window["apiLocation"]}/readfiles/${category.image}`}
+                                className='w-40 h-40 rounded-sm'
+                                onError={({ currentTarget }) => {
+                                    currentTarget.onerror = null; // prevents looping
+                                    currentTarget.src = `${window["apiLocation"]}/readfiles/product_default.jpg`;
+                                }}
+                            />
+                        </Grid>
 
+                        <Grid item xs={7} className="flex items-center">
+                            <div className='text-xl text-black font-bold'>{category.title}</div>
+                        </Grid>
+
+                        <Grid item xs={2} className="flex items-center">
+                            <Radio checked={selected?.id === category.id} />
+                        </Grid>
+                    </Grid>
+
+                ))}
+                
             </DialogContent>
         </Dialog>
         

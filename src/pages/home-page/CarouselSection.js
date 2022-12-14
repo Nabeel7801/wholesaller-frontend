@@ -30,7 +30,7 @@ function CarouselSection() {
                             <img
                                 class="ui fluid image"
                                 src={require("assets/img/slide-01.jpg")}
-                            /> 1
+                            />
                         </h3>
                     </div>
                     <div>

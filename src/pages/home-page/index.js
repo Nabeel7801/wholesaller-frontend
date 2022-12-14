@@ -7,27 +7,55 @@ import IndexNavbar from "components/Navbars/IndexNavbar.js";
 import MainNavbar from "components/Navbars/MainNavbar.js";
 import Footer from "components/Footers/Footer";
 
-import { CircularProgress, Container, IconButton, Paper } from "@material-ui/core";
+import { Container, IconButton, Box, Card } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import axios from "axios";
 
+import { Carousel } from "antd";
 import SuccessCheck from "assets/img/success/check.gif";
-import MainCategoriesSection from "./MainCategoriesSection";
+import SubCategories from "./SubCategories";
 import CategoriesModal from "./CategoriesModal";
-import CarouselSection from "./CarouselSection";
+import HorizontalList from "./HorizontalList";
 
 import { populateMainCategories } from "store/reducers/categories";
 import { populateProducts } from "store/reducers/products";
+import TopSection from "./TopSection";
+
+const useStyles = makeStyles(() => ({
+  carousel: {
+    borderRadius: "20px",
+    background: "#364d79",
+    boxShadow: "0px 0px 20px 5px rgba(0, 0, 0, 0.05)"
+  },
+  banner: {
+    width: '100%',
+    height: "350px",
+    objectFit: 'fill'
+  },
+  categoryBox: {
+    borderRadius: "10px",
+    margin: "10px",
+    backgroundColor: "rgb(156,156,156)",
+    background: "linear-gradient(135deg, rgba(213,211,211,1) 0%, rgba(250,250,252,1) 48%, rgba(250,250,252,1) 52%, rgba(213,211,211,1) 100%)"
+  },
+  categoryImage: {
+    width: "200px",
+    height: "200px",
+    objectFit: 'contain'
+  }
+}));
 
 function HomePage() {
+  
+  const classes = useStyles();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
   
   const user = useSelector((state) => state.auth.user);
-
-  const mainCategories = useSelector(state => state.categories.mainCategories);
+  const { selected: categorySelected, list: categoriesList } = useSelector(state => state.categories);
 
   const [banners, setBanners] = useState([]);
   const [success, setSuccess] = useState(false);
@@ -39,11 +67,6 @@ function HomePage() {
     // Fetch Main Category
     getList("admin/categories").then(({ data : categories }) => {
       dispatch(populateMainCategories(categories || []))
-    })
-
-    // Fetch Banners
-    getList("admin/banners", {sort: { reference: 1 }}).then(({ data }) => {
-      setBanners(data)
     })
 
     //Read Cart Items
@@ -58,6 +81,22 @@ function HomePage() {
   }, [])
 
   useEffect(() => {
+    // Fetch Products based on Products
+    getList("admin/products", categorySelected?.id ? { filter: { main_category: categorySelected.id } }: {})
+    .then(response => {
+      dispatch(populateProducts(response.data || []))
+
+    }).catch(err => console.log(err))
+
+    // Fetch Banners
+    getList("admin/banners", {sort: { reference: 1 }}).then(({ data }) => {
+      const filteredData = data?.filter(d => !categorySelected?.id || d.categories?.includes(categorySelected?.id)) || [];
+      setBanners(filteredData)
+    })
+    
+  }, [categorySelected])
+
+  useEffect(() => {
     //Check Document Status
     if (user.document) {
       axios.post(`${window["apiLocation"]}/getStatus/${user.document}`)
@@ -69,17 +108,6 @@ function HomePage() {
     }
 
   }, [user.document]);
-
-  const filterProducts = id => {
-    
-    axios.post(`${window["apiLocation"]}/getProductByMainCategory/${id}`)
-    .then(response => {
-      dispatch(populateProducts(response.data || []))
-      navigate("/products");
-
-    }).catch(err => console.log(err))
-
-  };
 
   const bannerClick = (categories) => {
     axios.post(`${window["apiLocation"]}/getProductByCategories`, categories)
@@ -98,138 +126,69 @@ function HomePage() {
       
       <CategoriesModal />
 
-      <Container maxWidth="lg" style={{ padding: '20px 5px' }}>
+      <Container maxWidth="lg" style={{ padding: '20px 5px 40px 5px' }}>
 
-        <MainCategoriesSection />
+        <TopSection />
+
+        <SubCategories />
         <br />
 
-        <CarouselSection />
-        <br />
-
-        {/* ----------- High selling products ----------- */}
-        <h2 class="text-base font-bold mb-3">High selling products</h2>
-
-        <div className="w-full h-full relative overflow-hidden">
-          <div className="flex pb-4 overflow-x-auto">
-            {!mainCategories || mainCategories.length === 0 ? (
-              <div
-                className="flex items-center justify-center w-full mx-auto"
-                style={{ minHeight: "220px" }}
-              >
-                <CircularProgress />
-              </div>
-
-            ) : (
-              mainCategories.map((item) => {
-                return (
-                  <Paper
-                    elevation={3}
-                    style={{ minWidth: "180px", padding: '15px 10px', margin: '10px', borderRadius: '10px', cursor: 'pointer' }}
-                    onClick={() => filterProducts(item.id)}
-                  >
-                    <h3
-                      className="break-words text-sm  md:text-base font-bold text-center capitalize"
-                      style={{ color: "#3f51b5" }}
-                    >
-                      {item.title}
-                    </h3>
-
-                    <div className="mt-2 md:mt-5">
-                      <img
-                        src={`${window["apiLocation"]}/readfiles/${item.image}`}
-                        alt={item.title}
-                        className="h-40 w-40 mx-auto"
-                      />
-                    </div>
-                  </Paper>
-                );
-              })
-            )}
-          </div>
-        </div>
-
-        {/* ----------- Lower Page Images ----------- */}
-        {/* <div className="mt-4 pb-28">
-          <div style={{ maxWidth: "1024px", margin: "auto" }}>
-            <Link to="/">
-              <div className=" rounded-lg main-image"></div>
-            </Link>
-          </div>
-          <div
-            style={{ maxWidth: "1024px", margin: "auto" }}
-            className="mt-0 w-full h-full relative overflow-hidden"
-          >
-            <div className="overflow-x-auto home-page-banners flex items-start justify-between md:justify-center gap-6 mt-2 ">
-              <div style={{ minWidth: "280px", width: "100%" }}>
-                <Link to="/">
-                  <div className="banner-1">
-                    <div className="rounded-lg main-image main-fmcg-1"></div>
-                  </div>
-                </Link>
-              </div>
-
-              <div>
-                <Link to="/">
-                  <div
-                    className="banner-2"
-                    style={{ minWidth: "280px", width: "100%" }}
-                  >
-                    <div className=" rounded-lg main-image main-fmcg-2"></div>
-                  </div>
-                </Link>
-              </div>
-            </div>
-          </div>
-          <div
-            className="mt-2"
-            style={{ maxWidth: "1024px", margin: "auto" }}
-          >
-            <Link to="/">
-              <div className="rounded-lg main-image rice-image"></div>
-            </Link>
-          </div>
-          <div
-            className="mt-2"
-            style={{ maxWidth: "1024px", margin: "auto" }}
-          >
-            <Link to="/">
-              <div className="rounded-lg main-image oil-image"></div>
-            </Link>
-          </div>
-          <div
-            style={{ maxWidth: "1024px", margin: "auto" }}
-            className="mt-2"
-          >
-            <Link to="/">
-              <div className="rounded-lg main-image masala-image"></div>
-            </Link>
-          </div>
-          <div
-            style={{ maxWidth: "1024px", margin: "auto" }}
-            className="mt-2"
-          >
-            <Link to="/">
-              <div className="rounded-lg main-image aata-image"></div>
-            </Link>
-          </div>
-        </div> */}
-        {banners.map(banner => (
-          <Paper 
-            elevation={3} 
-            onClick={() => bannerClick(banner.categories)} 
-            style={{ width: '100%', borderRadius: '10px', overflow: 'hidden', margin: '10px 0', cursor: 'pointer'}}
-          >
+        <Carousel autoplay className={classes.carousel}>
+          {banners.map(banner => (
             <img 
               alt="banner"
-              style={{ maxHeight: '240px', width: '100%' }}
+              className={classes.banner}
               src={`${window["apiLocation"]}/file/${banner.image}`}
+              onClick={() => bannerClick(banner?.redirect_categories || [])}
               onError={({ currentTarget }) => {
                   currentTarget.onerror = null; // prevents looping
                   currentTarget.src = `${window["apiLocation"]}/file/default.png`;
               }}
             />
-          </Paper>
-        ))}
+          ))}
+        </Carousel>
+        <br />
+
+        <HorizontalList 
+          title="Top Rated Products"
+          filter="TopRatedProducts"
+        />
+        <br />
+        
+        <HorizontalList 
+          title="New Arrivals"
+          filter="NewArrivals"
+        />
+        <br />
+
+        <Box className="flex flex-no-wrap overflow-auto">
+          {categoriesList
+            .filter(c => categorySelected.id ? c.parent === categorySelected.id : c.parent !== "none")
+            .map(category => (
+              <div style={{ flex: "0 0 200px" }}>
+                <Card className={classes.categoryBox} onClick={() => navigate(`/categories/${category.id}`)}>
+                  <img
+                    alt="category"
+                    className={classes.categoryImage}
+                    src={`${window["apiLocation"]}/readfiles/${category.image}`}
+                    onError={({ currentTarget }) => {
+                      currentTarget.onerror = null; // prevents looping
+                      currentTarget.src = `${window["apiLocation"]}/readfiles/product_default.jpg`;
+                    }}
+                  />
+                </Card>
+                <h2 className="text-sm font-bold text-gray-500 text-center">{category.title}</h2>
+              </div>
+            ))
+          }
+        </Box>
+        <br />
+
+        <HorizontalList 
+          title="Top Best Sellers"
+          filter="TopBestSellers"
+        />
+        <br />
 
       </Container>
       
@@ -262,8 +221,7 @@ function HomePage() {
 
           <IconButton 
             onClick={() => navigate("/verifydocument")}
-            aria-label="upload document" 
-            size="large" 
+            aria-label="upload document"  
             className="floatright"
           >
             <ChevronRightIcon fontSize="inherit" sx={{color: "white"}} />

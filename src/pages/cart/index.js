@@ -2,17 +2,16 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { stringify } from 'query-string';
+import { getList } from "dataProvider";
 
 import IndexNavbar from "components/Navbars/IndexNavbar.js";
 import MainNavbar from "components/Navbars/MainNavbar.js";
 import DemoFooter from "components/Footers/DemoFooter.js";
 
-import { Box, Card, Radio, Container, CardContent, CardMedia, Typography, Grid, TextField as TextFieldUI, IconButton } from '@mui/material';
-import { Button } from '@material-ui/core'
+import { Button, Box, Card, Radio, Container, CardContent, CardMedia, Typography, Grid, TextField as TextFieldUI, IconButton } from '@material-ui/core'
 import { styled } from "@material-ui/core/styles";
 import axios from "axios";
-import { Remove, Add, Delete } from '@mui/icons-material';
+import { Remove, Add, Delete, ChevronLeft } from '@material-ui/icons';
 import { setCart } from "store/reducers/cart";
 
 const TextField = styled(TextFieldUI)({
@@ -46,17 +45,16 @@ function Cart() {
   useEffect(() => {
 
     // Set Product Details
-    const productIDs = cartState?.filter(c => c).map(c => c.product_id);
-    const query = { filter: JSON.stringify({ id: productIDs }) };
+    const productIDs = cartState?.filter(c => c).map(c => c.product_id) || [];
 
-    axios.get(`${window["apiLocation"]}/admin/products?${stringify(query)}`)
+    getList("admin/products", { filter: { id: productIDs } })
     .then(response => {
       const responseData = response.data;
-
-      const newProductData = responseData.map(product => {
-        product.cart_info = cartState.filter(cart => cart.product_id === product._id)[0];
+      const newProductData = responseData?.map(product => {
+        product.cart_info = cartState.filter(cart => cart.product_id === product.id)[0];
         return product;
-      })
+      }) || []
+
       setProductDetails(newProductData);
 
     }).catch(err => console.log(err))
@@ -117,7 +115,7 @@ function Cart() {
 
   const placeOrderToDatabase = (customerID) => {
 
-    const basket = productDetails.map(product => ({product_id: product._id, buy_price: product.cart_info?.buy_price, quantity: product.cart_info?.quantity }))
+    const basket = productDetails.map(product => ({product_id: product.id, buy_price: product.cart_info?.buy_price, quantity: product.cart_info?.quantity }))
     // Place Order
     const orderObj = {
       date: (new Date()).toISOString(),
@@ -131,7 +129,7 @@ function Cart() {
       status: "pending",
       returned: false
     }
-    console.log(orderObj)
+
     axios.post(`${window["apiLocation"]}/admin/orders`, {...orderObj, customer_id: customerID})
       .then(() => {
         dispatch(setCart([]))
@@ -164,10 +162,10 @@ function Cart() {
 
       }else {
         axios.post(`${window["apiLocation"]}/admin/customers`, userInfo)
-          .then((res) => {
-            placeOrderToDatabase(res.data._id)
+        .then((res) => {
+          placeOrderToDatabase(res.data._id)
 
-          }).catch(err => console.log(err))
+        }).catch(err => console.log(err))
 
       }
     })
@@ -189,21 +187,21 @@ function Cart() {
               <hr /><br />
               {productDetails?.map((product, key) => 
 
-                <Card key={key} sx={{ position: "relative", margin: "20px 2.5%", boxShadow: "0px 3px 16px 0px rgba(200,200,200,0.4)" }}>
+                <Card key={key} style={{ position: "relative", margin: "20px 2.5%", boxShadow: "0px 0px 16px 5px rgba(200,200,200,0.4)" }}>
                   
                   <Grid container>
-                    <Grid item xs={3} sx={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                    <Grid item xs={3} style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                       <CardMedia
                         component="img"
-                        sx={{ width: "90%", maxHeight: "125px" }}
+                        style={{ width: "90%", maxHeight: "125px" }}
                         image={`${window["apiLocation"]}/readfiles/${product.image}`}
                         alt="Product"
                       />
                     </Grid>
 
                     <Grid item xs={9}>
-                      <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-                        <CardContent sx={{ flex: '1 0 auto' }}>
+                      <Box style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+                        <CardContent style={{ flex: '1 0 auto' }}>
                           
                           <Typography component="div" variant="h5">
                             {product.reference}
@@ -215,8 +213,7 @@ function Cart() {
 
                         </CardContent>
 
-                        <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'flex-end', pl: 1, pb: 1 }}>
-                          
+                        <Box style={{ display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'flex-end', paddingBottom: "10px" }}>
                           <div className="input-group" style={{height: "40px", width: "140px", margin: "0 20px 0 0"}}>
                             <div className="input-group-prepend">
                               <button 
@@ -248,14 +245,13 @@ function Cart() {
                               </button>
                             </div>
                           </div>
-
                         </Box>
                       </Box>
                     </Grid>
                   </Grid>
 
                   <IconButton aria-label="delete" onClick={() => removeFromCart(key)} style={{color: "#C32147", position: "absolute", top: "10px", right: "10px"}}>
-                    <Delete sx={{fontSize: "1.2em"}}/>
+                    <Delete style={{fontSize: "1.2em"}}/>
                   </IconButton>
 
                 </Card>
@@ -265,14 +261,23 @@ function Cart() {
             </Grid>
 
             <Grid item md={5} sm={12}>
-                <Typography variant="h6" align="center">Order Summary</Typography>
+                <div className="flex items-center">
+                  {currStep === 2 &&
+                    <IconButton onClick={() => setCurrStep(1)} size="small" disableRipple={true}>
+                      <ChevronLeft style={{ fontSize: "1.2em" }}/>
+                    </IconButton>
+                  }
+                  
+                  <Typography className="w-full" variant="h6" align="center">Order Summary</Typography>
+                </div>
                 <hr />
+
                 <Grid container>
                   <Grid item xs={6}>
-                    <Typography variant="body2">Total</Typography>
+                    <Typography variant="body2" style={{ fontWeight: 600 }}>Total</Typography>
                   </Grid>
                   <Grid item xs={6}>
-                    <Typography variant="body1" align="right" fontWeight={600}>₹ {totalAmount}</Typography>
+                    <Typography variant="body1" align="right">₹ {totalAmount}</Typography>
                   </Grid>
                 </Grid>
                 
@@ -359,7 +364,7 @@ function Cart() {
                           </Grid>
                         </Grid>
 
-                        <Button type="submit" color="primary" variant="contained" fullWidth sx={{marginTop: '1em', padding: "10px 0"}}>
+                        <Button type="submit" color="primary" variant="contained" fullWidth style={{marginTop: '1em', padding: "10px 0"}}>
                           Proceed to Billing
                         </Button>
                       </form>
@@ -368,29 +373,29 @@ function Cart() {
                   <>
                     <Grid container>
                       <Grid item xs={6}>
-                        <Typography variant="body2">Delivery</Typography>
+                        <Typography variant="body2" style={{ fontWeight: 600 }}>Delivery</Typography>
                       </Grid>
                       <Grid item xs={6}>
-                        <Typography variant="body1" align="right" fontWeight={600}>₹ {deliveryFees}</Typography>
+                        <Typography variant="body1" align="right">₹ {deliveryFees}</Typography>
                       </Grid>
                     </Grid>
 
                     <Grid container>
                       <Grid item xs={6}>
-                        <Typography variant="body2">Grand Total</Typography>
+                        <Typography variant="body2" style={{ fontWeight: 600 }}>Grand Total</Typography>
                       </Grid>
                       <Grid item xs={6}>
-                        <Typography variant="body1" align="right" fontWeight={600}>₹ {totalAmount+deliveryFees}</Typography>
+                        <Typography variant="body1" align="right">₹ {totalAmount+deliveryFees}</Typography>
                       </Grid>
                     </Grid>
                     
                     <Box>
                       <hr />
-                      <Card sx={{boxShadow: "0px 3px 16px 0px rgba(200,200,200,0.4)"}}>
-                        <CardContent sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                      <Card >
+                        <CardContent style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                           <Radio
                             checked = {true}
-                            sx={{
+                            style={{
                               color: "#D81B60",
                               '&.Mui-checked': {
                                 color: "#D81B60",
@@ -404,7 +409,7 @@ function Cart() {
                         </CardContent>
                       </Card>
 
-                      <Button onClick={placeOrder} color="primary" variant="contained" fullWidth sx={{marginTop: '20px', padding: '10px 0'}}>
+                      <Button onClick={placeOrder} color="primary" variant="contained" fullWidth style={{marginTop: '20px', padding: '10px 0'}}>
                         Complete Order
                       </Button>
 
@@ -416,7 +421,7 @@ function Cart() {
 
           </Grid>
         :
-          <h2 className="text-3xl flex justify-center items-center mx-auto text-center" style={{color: '#aaa'}}>
+          <h2 className="text-2xl sm:text-3xl flex justify-center items-center mx-auto text-center" style={{color: '#aaa'}}>
             Cart Empty
           </h2>
         }

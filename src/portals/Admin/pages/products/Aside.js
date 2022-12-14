@@ -1,8 +1,7 @@
 import React from 'react';
 import inflection from 'inflection';
 import { Card, CardContent } from '@mui/material';
-import LocalOfferIcon from '@mui/icons-material/LocalOfferOutlined';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import { LocalOfferOutlined, CategoryOutlined } from '@mui/icons-material';
 import { FilterList, FilterListItem, FilterLiveSearch, useGetList } from 'react-admin';
 
 const Aside = () => {
@@ -27,46 +26,28 @@ const Aside = () => {
                 <FilterLiveSearch />
 
                 <FilterList
-                    label="Sales"
-                    icon={<AttachMoneyIcon />}
+                    label="Tags"
+                    icon={<LocalOfferOutlined />}
                 >
                     <FilterListItem
-                        label="Best sellers"
-                        value={{
-                            sales_lte: undefined,
-                            sales_gt: 25,
-                            sales: undefined,
-                        }}
+                        label={inflection.humanize("Best Sellers")}
+                        value={{ tags: "TopBestSellers" }}
                     />
+
                     <FilterListItem
-                        label="Average"
-                        value={{
-                            sales_lte: 25,
-                            sales_gt: 10,
-                            sales: undefined,
-                        }}
+                        label={inflection.humanize("New Arrivals")}
+                        value={{ tags: "NewArrivals" }}
                     />
+
                     <FilterListItem
-                        label="Low"
-                        value={{
-                            sales_lte: 10,
-                            sales_gt: 0,
-                            sales: undefined,
-                        }}
-                    />
-                    <FilterListItem
-                        label="Never sold"
-                        value={{
-                            sales_lte: undefined,
-                            sales_gt: undefined,
-                            sales: 0,
-                        }}
+                        label={inflection.humanize("Top Rated Products")}
+                        value={{ tags: "TopRatedProducts" }}
                     />
                 </FilterList>
 
                 <FilterList
                     label="Categories"
-                    icon={<LocalOfferIcon />}
+                    icon={<CategoryOutlined />}
                 >
                     {categories?.map(record => (
                         <FilterListItem

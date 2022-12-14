@@ -3,14 +3,32 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import axios from "axios";
+import { getList } from "dataProvider";
+
 import { Container, Card, Grid, Typography } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import IndexNavbar from "components/Navbars/IndexNavbar";
 import MainNavbar from "components/Navbars/MainNavbar";
 
 import { populateProducts } from "store/reducers/products";
 
+const useStyles = makeStyles(() => ({
+  categoryBox: {
+    borderRadius: "10px",
+    backgroundColor: "rgb(156,156,156)",
+    background: "linear-gradient(135deg, rgba(213,211,211,1) 0%, rgba(250,250,252,1) 48%, rgba(250,250,252,1) 52%, rgba(213,211,211,1) 100%)"
+  },
+  categoryImage: {
+    width: "100%",
+    height: "150px",
+    objectFit: 'contain'
+  }
+}));
+
 const SubCategory = () => {
   const [allCategories, setAllCategories] = useState([]);  
+
+  const classes = useStyles();
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -36,23 +54,25 @@ const SubCategory = () => {
   }, [navigate, parent, user]);
 
   const filterbychildcategory = id => {
-    axios.post(`${window["apiLocation"]}/getProductByChildCategory/${id}`)
-      .then(response => {
-        dispatch(populateProducts(response.data || []))
-        navigate("/products");
+    if (!id) return;
+    
+    getList("admin/products", { filter: { child_category: id } })
+    .then(response => {
+      dispatch(populateProducts(response.data || []))
+      navigate("/products");
 
-      }).catch(err => console.log(err))
- 
+    }).catch(err => console.log(err))
   };
   
   const filterbysubcategory = id => {
-    axios.post(`${window["apiLocation"]}/getProductBySubCategory/${id}`)
-      .then(response => {
-        dispatch(populateProducts(response.data || []))
-        navigate("/products", {replace: true});
+    if (!id) return;
+    
+    getList("admin/products", { filter: { sub_category: id } })
+    .then(response => {
+      dispatch(populateProducts(response.data || []))
+      navigate("/products", {replace: true});
 
-      }).catch(err => console.log(err))
- 
+    }).catch(err => console.log(err))
   };
   
   return (
@@ -66,7 +86,24 @@ const SubCategory = () => {
           <hr /><br />
 
           <Grid container spacing={3}>
-            {allCategories.map((item) => (
+            {allCategories.map(category => (
+                <Grid item xs={6} sm={4} md={3} lg={2}>
+                  <Card className={classes.categoryBox} onClick={() => filterbychildcategory(category._id)}>
+                    <img
+                      alt="category"
+                      className={classes.categoryImage}
+                      src={`${window["apiLocation"]}/readfiles/${category.image}`}
+                      onError={({ currentTarget }) => {
+                        currentTarget.onerror = null; // prevents looping
+                        currentTarget.src = `${window["apiLocation"]}/readfiles/product_default.jpg`;
+                      }}
+                    />
+                  </Card>
+                  <h2 className="text-sm font-bold text-gray-500 text-center">{category.title}</h2>
+                </Grid>
+              ))
+            }
+            {/* {allCategories.map((item) => (
               <Grid item xs={6} sm={4} md={3} lg={2}>
                 <Card
                   style={{ boxShadow: "0px 3px 16px 0px rgba(200,200,200,0.4)", height: '100%', padding: '10px 0', borderRadius: '10px', cursor: 'pointer' }}
@@ -90,7 +127,7 @@ const SubCategory = () => {
                   </h3>
                 </Card>
               </Grid>
-            ))}
+            ))} */}
           </Grid>
         </Container>
       </div>
