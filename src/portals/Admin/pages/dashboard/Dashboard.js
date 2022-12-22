@@ -31,23 +31,9 @@ const Dashboard = () => {
     );
     const aMonthAgo = useMemo(() => subDays(startOfDay(new Date()), 30), []);
 
-    const { data: orders } = useGetList('orders', {
-        filter: { date_gte: aMonthAgo.toISOString() },
-        sort: { field: 'date', order: 'DESC' },
-        pagination: { page: 1, perPage: 50 },
-    });
-
-    const { data: totalCustomers } = useGetList('customers', {
-        filter: {},
-        sort: { field: 'id', order: 'ASC' },
-        pagination: { page: 1, perPage: 999999 },
-    });
-
-    const { data: totalWarehouses } = useGetList('warehouses', {
-        filter: {},
-        sort: { field: 'id', order: 'DESC' },
-        pagination: { page: 1, perPage: 999999 },
-    });
+    const { data: orders } = useGetList('orders', { filter: { date_gte: aMonthAgo.toISOString() } });
+    const { data: totalCustomers } = useGetList('customers');
+    const { data: totalWarehouses } = useGetList('warehouses');
 
     const aggregation = useMemo(() => {
         if (!orders) return {};

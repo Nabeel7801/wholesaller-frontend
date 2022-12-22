@@ -4,6 +4,7 @@ import { NumericFormat } from 'react-number-format';
 import PropTypes from 'prop-types';
 import { Box, Typography, Grid, Button, Chip as ChipMUI } from "@material-ui/core";
 import { LocalMall, AlarmOn, QueryBuilder, CancelOutlined, CheckCircleOutlined } from '@material-ui/icons';
+import CountDown from './CountDown';
 
 function Chip({ label, style={} }) {
     const text = label.length > 0 ? label[0].toUpperCase() + label.slice(1) : "";
@@ -14,7 +15,7 @@ function Chip({ label, style={} }) {
         const styles = { color: "#fff" }
         switch (label) {
             case 'pending':
-                return <QueryBuilder style={styles} />;
+                return <QueryBuilder style={{ ...styles, color: '#000' }} />;
 
             case 'dispatched':
                 return <AlarmOn style={styles} />;
@@ -43,6 +44,11 @@ function OrderCard(props) {
     const { card, reorderHandler, cancelOrder } = props;
     const maxItems = 2;
   
+    const getDuration = () => {
+        const diff = DateTime.fromISO(card.delivered_at || DateTime.now()).diff(DateTime.fromISO(card.date), ['days', 'hours', 'minutes', 'seconds'])
+        return (diff.days ? `${diff.days}d, ` : "") + diff.hours + ":" + diff.minutes + ":" + parseInt(diff.seconds);
+    }
+
     return (    
         <Media queries={{
             small: "(max-width: 599px)",
@@ -59,6 +65,10 @@ function OrderCard(props) {
                             
                             <Typography variant={matches.small ? 'h6' : 'h5'} style={{textTransform: 'none'}}>
                                 Order Id: {card.reference}
+
+                                {(matches.medium || matches.large) && 
+                                    <Chip label={card.status} style={{ marginLeft: "20px" }}
+                                />}
                             </Typography>
 
                             <Typography variant="body2">
@@ -73,6 +83,15 @@ function OrderCard(props) {
                                 {card.basket.length > maxItems && <b>{card.basket.length - maxItems} more item{card.basket.length - maxItems > 1 ? "s" : ""}...</b>}
                             </Typography>
 
+                            <Button onClick={() => reorderHandler(card.basket)} color="primary" variant="contained" style={{ marginTop: '10px', borderRadius: '4px' }}>
+                                <LocalMall /> &nbsp;&nbsp;Reorder
+                            </Button>
+
+                            {cancelOrder && card.status === 'pending' &&
+                                <Button onClick={() => cancelOrder(card.id)} color="secondary" variant="outlined" style={{ marginTop: '10px', marginLeft: '10px', borderRadius: '4px' }}>
+                                    Cancel
+                                </Button>
+                            }
                         </Grid>
 
                         <Grid item xs={3}>
@@ -80,21 +99,16 @@ function OrderCard(props) {
                                 <NumericFormat value={(card.total || 0).toFixed(2)} displayType="text" thousandSeparator prefix="₹" />
                             </Typography>
 
-                            {(matches.medium || matches.large) && 
-                                <Chip label={card.status} style={{ marginTop: "20px" }}
-                            />}
+                            {(card.status === 'pending' || card.status === 'dispatched') &&
+                                <CountDown startDate={card.date}/>
+                            }
+
+                            {card.status === 'delivered' &&
+                                <Typography className="mt-4" variant={matches.small ? "body1" : "h6"}>Delivered<br /> <b>{getDuration()}</b></Typography>
+                            }
+
                         </Grid>
                     </Grid>
-
-                    <Button onClick={() => reorderHandler(card.basket)} color="primary" variant="contained" style={{ marginTop: '10px', borderRadius: '4px' }}>
-                        <LocalMall /> &nbsp;&nbsp;Reorder
-                    </Button>
-
-                    {cancelOrder && card.status === 'pending' &&
-                        <Button onClick={() => cancelOrder(card.id)} color="secondary" variant="outlined" style={{ marginTop: '10px', marginLeft: '10px', borderRadius: '4px' }}>
-                            Cancel
-                        </Button>
-                    }
 
                 </Box>
             )}

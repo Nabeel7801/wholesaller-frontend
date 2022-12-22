@@ -69,39 +69,37 @@ function OrderHistory() {
 
       <br />
 
-      <div className="mt-0 lg:mt-10 md:px-4 lg:px-6">
-        <Container maxWidth="lg">
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            indicatorColor="primary"
-            textColor="primary"
-          >
-            <Tab label="Current Orders" />
-            <Tab label="Purchase History" />
-          </Tabs>
+      <Container maxWidth="lg" className="px-0 sm:px-2 md:px-4 lg:px-6">
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          indicatorColor="primary"
+          textColor="primary"
+        >
+          <Tab label="Current Orders" />
+          <Tab label="Purchase History" />
+        </Tabs>
 
-          <TabPanel value={value} index={0}>
-            
-            {currentOrders?.map(order => <OrderCard card={order} reorderHandler={reorderHandler} cancelOrder={cancelOrder} />)}
-            {currentOrders.length === 0 && 
-              <h5 className="text-2xl sm:text-3xl flex justify-center items-center mx-auto mt-5 text-center" style={{color: '#aaa'}}>
-                No Active Orders
-              </h5>
-            } 
-          </TabPanel>
+        <TabPanel value={value} index={0}>
+          
+          {currentOrders?.map(order => <OrderCard card={order} reorderHandler={reorderHandler} cancelOrder={cancelOrder} />)}
+          {currentOrders.length === 0 && 
+            <h5 className="text-2xl sm:text-3xl flex justify-center items-center mx-auto mt-5 text-center" style={{color: '#aaa'}}>
+              No Active Orders
+            </h5>
+          } 
+        </TabPanel>
 
-          <TabPanel value={value} index={1} sx={{backgroundColor: '#eee'}}>
-            
-            {previousOrders?.map(order => <OrderCard card={order} reorderHandler={reorderHandler} />)}
-            {previousOrders.length === 0 && 
-              <h5 className="text-2xl sm:text-3xl flex justify-center items-center mx-auto mt-5 text-center" style={{color: '#aaa'}}>
-                No Previous Orders
-              </h5>
-            } 
-          </TabPanel>
-        </Container>
-      </div>
+        <TabPanel value={value} index={1} sx={{backgroundColor: '#eee'}}>
+          
+          {previousOrders?.map(order => <OrderCard card={order} reorderHandler={reorderHandler} />)}
+          {previousOrders.length === 0 && 
+            <h5 className="text-2xl sm:text-3xl flex justify-center items-center mx-auto mt-5 text-center" style={{color: '#aaa'}}>
+              No Previous Orders
+            </h5>
+          } 
+        </TabPanel>
+      </Container>
 
       <DemoFooter />
     </div>

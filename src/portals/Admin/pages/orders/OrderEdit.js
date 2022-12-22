@@ -111,7 +111,7 @@ const OrderForm = () => {
 
     const [deliver, { isLoading: loadingDeliver }] = useUpdate(
         'orders',
-        { id: record.id, data: { status: 'delivered' }, previousData: record },
+        { id: record.id, data: { status: 'delivered', delivered_at: new Date() }, previousData: record },
         {
             mutationMode: 'undoable',
             onSuccess: () => {

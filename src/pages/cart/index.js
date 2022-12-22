@@ -33,6 +33,7 @@ function Cart() {
     user_id: user._id,
     first_name: user.first_name,
     last_name: user.last_name,
+    outlet_name: user.outlet_name,
     email: user.email,
     address: user.address,
     pincode: user.pincode,
@@ -182,18 +183,18 @@ function Cart() {
         {total > 0 ? 
           <Grid container spacing={6}>
 
-            <Grid item md={7} sm={12}>
+            <Grid item md={7} xs={12}>
               <Typography variant="h6">Products</Typography>
               <hr /><br />
               {productDetails?.map((product, key) => 
 
-                <Card key={key} style={{ position: "relative", margin: "20px 2.5%", boxShadow: "0px 0px 16px 5px rgba(200,200,200,0.4)" }}>
+                <Card key={key} style={{ position: "relative", margin: "20px 0", boxShadow: "0px 0px 16px 5px rgba(200,200,200,0.4)" }}>
                   
                   <Grid container>
                     <Grid item xs={3} style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                       <CardMedia
                         component="img"
-                        style={{ width: "90%", maxHeight: "125px" }}
+                        style={{ width: "90%", maxHeight: "125px", objectFit: "contain" }}
                         image={`${window["apiLocation"]}/readfiles/${product.image}`}
                         alt="Product"
                       />
@@ -208,7 +209,7 @@ function Cart() {
                           </Typography>
                           
                           <Typography variant="subtitle1" color="text.secondary" component="div">
-                            ₹{product.cart_info?.buy_price}/Unit &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; Quantity: {product.cart_info?.quantity}
+                            ₹{product.cart_info?.buy_price}/Unit &nbsp;&nbsp; | &nbsp;&nbsp; Quantity: {product.cart_info?.quantity}
                           </Typography>
 
                         </CardContent>
@@ -260,7 +261,7 @@ function Cart() {
 
             </Grid>
 
-            <Grid item md={5} sm={12}>
+            <Grid item md={5} xs={12}>
                 <div className="flex items-center">
                   {currStep === 2 &&
                     <IconButton onClick={() => setCurrStep(1)} size="small" disableRipple={true}>

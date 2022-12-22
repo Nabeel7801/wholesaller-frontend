@@ -13344,7 +13344,7 @@ a:focus {
         padding: .6rem;
     }
     .sm\:p-8 {
-        padding: .8rem;
+        padding: .8rem !important;
     }
     .sm\:p-12 {
         padding: 1.2rem;

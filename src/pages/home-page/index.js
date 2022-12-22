@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Media from 'react-media';
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getList } from "dataProvider";
@@ -32,6 +33,7 @@ const useStyles = makeStyles(() => ({
   banner: {
     width: '100%',
     height: "350px",
+    maxHeight: "350px",
     objectFit: 'fill'
   },
   categoryBox: {
@@ -40,11 +42,6 @@ const useStyles = makeStyles(() => ({
     backgroundColor: "rgb(156,156,156)",
     background: "linear-gradient(135deg, rgba(213,211,211,1) 0%, rgba(250,250,252,1) 48%, rgba(250,250,252,1) 52%, rgba(213,211,211,1) 100%)"
   },
-  categoryImage: {
-    width: "200px",
-    height: "200px",
-    objectFit: 'contain'
-  }
 }));
 
 function HomePage() {
@@ -120,136 +117,144 @@ function HomePage() {
   }
 
   return (
-    <>
-
-      { user ? <MainNavbar /> : <IndexNavbar /> }
-      
-      <CategoriesModal />
-
-      <Container maxWidth="lg" style={{ padding: '20px 5px 40px 5px' }}>
-
-        <TopSection />
-
-        <SubCategories />
-        <br />
-
-        <Carousel autoplay className={classes.carousel}>
-          {banners.map(banner => (
-            <img 
-              alt="banner"
-              className={classes.banner}
-              src={`${window["apiLocation"]}/file/${banner.image}`}
-              onClick={() => bannerClick(banner?.redirect_categories || [])}
-              onError={({ currentTarget }) => {
-                  currentTarget.onerror = null; // prevents looping
-                  currentTarget.src = `${window["apiLocation"]}/file/default.png`;
-              }}
-            />
-          ))}
-        </Carousel>
-        <br />
-
-        <HorizontalList 
-          title="Top Rated Products"
-          filter="TopRatedProducts"
-        />
-        <br />
-        
-        <HorizontalList 
-          title="New Arrivals"
-          filter="NewArrivals"
-        />
-        <br />
-
-        <Box className="flex flex-no-wrap overflow-auto">
-          {categoriesList
-            .filter(c => categorySelected.id ? c.parent === categorySelected.id : c.parent !== "none")
-            .map(category => (
-              <div style={{ flex: "0 0 200px" }}>
-                <Card className={classes.categoryBox} onClick={() => navigate(`/categories/${category.id}`)}>
-                  <img
-                    alt="category"
-                    className={classes.categoryImage}
-                    src={`${window["apiLocation"]}/readfiles/${category.image}`}
-                    onError={({ currentTarget }) => {
-                      currentTarget.onerror = null; // prevents looping
-                      currentTarget.src = `${window["apiLocation"]}/readfiles/product_default.jpg`;
-                    }}
-                  />
-                </Card>
-                <h2 className="text-sm font-bold text-gray-500 text-center">{category.title}</h2>
-              </div>
-            ))
-          }
-        </Box>
-        <br />
-
-        <HorizontalList 
-          title="Top Best Sellers"
-          filter="TopBestSellers"
-        />
-        <br />
-
-      </Container>
-      
-      <Footer />
-      
-      {success && (
-        <div
-          className="fixed top-0 bg-neutral-800/50 bottom-0 right-0 left-0 z-100 flex items-center justify-center"
-          style={{ zIndex: "1000", background: "rgba(0,0,0,0.5)" }}
-        >
-          <img
-            src={SuccessCheck}
-            alt="order placed successfully"
-            style={{ width: "80%", maxWidth: "450px", margin: "auto" }}
-          />
-        </div>
-      )}
-
-      {verificationStatus === null ?
-        <div className="kycfooter bg-blue-500 h-40 px-6 z-999">
+    <Media queries={{
+      small: "(max-width: 599px)",
+      medium: "(min-width: 600px) and (max-width: 1199px)",
+      large: "(min-width: 1200px)"
+    }}>
+      {matches => (
+        <>
+          { user ? <MainNavbar /> : <IndexNavbar /> }
           
-          <div>
-            <div className="text-white text-lg font-bold">
-              <AssignmentIcon /> Want to see prices?
-            </div>
-            <div className="text-white text-sm font-semibold">
-              &nbsp;&nbsp;&nbsp;&nbsp;Complete your shop kyc
-            </div>
-          </div>
+          <CategoriesModal />
 
-          <IconButton 
-            onClick={() => navigate("/verifydocument")}
-            aria-label="upload document"  
-            className="floatright"
-          >
-            <ChevronRightIcon fontSize="inherit" sx={{color: "white"}} />
-          </IconButton>
+          <Container maxWidth="lg" style={{ padding: '20px 5px 40px 5px' }}>
 
-        </div>
-      : 
-        verificationStatus === "pending" && (
-          <div className="kycfooter bg-blue-500 h-40 px-6 z-999">
+            <TopSection />
+
+            <SubCategories />
+            <br />
+
+            <Carousel autoplay className={classes.carousel}>
+              {banners.map(banner => (
+                <img 
+                  alt="banner"
+                  className={classes.banner}
+                  src={`${window["apiLocation"]}/file/${banner.image}`}
+                  onClick={() => bannerClick(banner?.redirect_categories || [])}
+                  onError={({ currentTarget }) => {
+                      currentTarget.onerror = null; // prevents looping
+                      currentTarget.src = `${window["apiLocation"]}/file/default.png`;
+                  }}
+                />
+              ))}
+            </Carousel>
+            <br />
+
+            <HorizontalList 
+              title="Top Rated Products"
+              filter="TopRatedProducts"
+            />
+            <br />
             
-            <div>
-              <div className="text-white text-lg font-bold">
-                <AssignmentIcon /> Want to see prices?
-              </div>
-              <div className="text-white text-smfont-semibold">
-                Your account is under verification once verify you will get notification
-              </div>
+            <HorizontalList 
+              title="New Arrivals"
+              filter="NewArrivals"
+            />
+            <br />
+
+            <Box className="flex flex-no-wrap overflow-auto">
+              {categoriesList
+                .filter(c => categorySelected.id ? c.parent === categorySelected.id : c.parent !== "none")
+                .map(category => (
+                  <div style={ matches.small ? { flex: "0 0 150px" } : { flex: "0 0 200px" } }>
+                    <Card className={classes.categoryBox} onClick={() => navigate(`/categories/${category.id}`)}>
+                      <img
+                        alt="category"
+                        className={classes.categoryImage}
+                        style={matches.small ? { width: "150px", height: "150px", objectFit: 'contain' } : { width: "200px", height: "200px", objectFit: 'contain' }}
+                        src={`${window["apiLocation"]}/readfiles/${category.image}`}
+                        onError={({ currentTarget }) => {
+                          currentTarget.onerror = null; // prevents looping
+                          currentTarget.src = `${window["apiLocation"]}/readfiles/product_default.jpg`;
+                        }}
+                      />
+                    </Card>
+                    <h2 className="text-sm font-bold text-gray-500 text-center">{category.title}</h2>
+                  </div>
+                ))
+              }
+            </Box>
+            <br />
+
+            <HorizontalList 
+              title="Top Best Sellers"
+              filter="TopBestSellers"
+            />
+            <br />
+
+          </Container>
+          
+          <Footer />
+          
+          {success && (
+            <div
+              className="fixed top-0 bg-neutral-800/50 bottom-0 right-0 left-0 z-100 flex items-center justify-center"
+              style={{ zIndex: "1000", background: "rgba(0,0,0,0.5)" }}
+            >
+              <img
+                src={SuccessCheck}
+                alt="order placed successfully"
+                style={{ width: "80%", maxWidth: "450px", margin: "auto" }}
+              />
             </div>
+          )}
 
-            <a className="text-white">
-              <i aria-hidden="true" class="angle right big icon floatright"></i>
-            </a>
+          {verificationStatus === null ?
+            <div className="kycfooter bg-blue-500 h-40 px-6 z-999">
+              
+              <div>
+                <div className="text-white text-lg font-bold">
+                  <AssignmentIcon /> Want to see prices?
+                </div>
+                <div className="text-white text-sm font-semibold">
+                  &nbsp;&nbsp;&nbsp;&nbsp;Complete your shop kyc
+                </div>
+              </div>
 
-          </div>
-        )
-      }
-       
-    </>
+              <IconButton 
+                onClick={() => navigate("/verifydocument")}
+                aria-label="upload document"  
+                className="floatright"
+              >
+                <ChevronRightIcon fontSize="inherit" sx={{color: "white"}} />
+              </IconButton>
+
+            </div>
+          : 
+            verificationStatus === "pending" && (
+              <div className="kycfooter bg-blue-500 h-40 px-6 z-999">
+                
+                <div>
+                  <div className="text-white text-lg font-bold">
+                    <AssignmentIcon /> Want to see prices?
+                  </div>
+                  <div className="text-white text-smfont-semibold">
+                    Your account is under verification once verify you will get notification
+                  </div>
+                </div>
+
+                <a className="text-white">
+                  <i aria-hidden="true" class="angle right big icon floatright"></i>
+                </a>
+
+              </div>
+            )
+          }
+          
+        </>
+      )}
+    </Media>
   );
 }
 

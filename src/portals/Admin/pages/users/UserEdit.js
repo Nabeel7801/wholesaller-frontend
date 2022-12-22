@@ -1,7 +1,26 @@
 import React from 'react';
 import { Edit, TextInput, SimpleForm, useRecordContext } from 'react-admin';
-import { Grid, Box, Typography } from '@mui/material';
+import { Grid, Box, Typography, Button } from '@mui/material';
+import { Launch } from '@mui/icons-material';
 import DocumentArea from './DocumentArea';
+
+const OpenAccount = (props) => {
+    const record = useRecordContext(props);
+    if (!record) return null;
+    const { email, password } = record;
+
+    return (
+        <Button 
+            variant="contained"
+            size="large"
+            endIcon={<Launch />}
+            sx={{ height: '48px', mt: '8px', ml: '4px' }}
+            onClick={() => window.open(`${window.location.protocal || "http"}://${window.location.host}/signin?email=${email}&password=${password}`)}
+        >
+            <Typography component="span" sx={{ display: {xs: 'none', sm: 'block'},  }}>Account </Typography>
+        </Button>
+    )
+}
 
 const UserEdit = () => {
 
@@ -98,12 +117,18 @@ const UserEdit = () => {
                             <Typography variant="h6" gutterBottom>
                                 Password
                             </Typography>
-
-                            <TextInput
-                                source="password"
-                                disabled
-                                fullWidth
-                            />
+                            <Box sx={{ display: 'flex' }}>
+                                <Box flex={3} mr={{ xs: 0, sm: '0.5em' }}>
+                                    <TextInput
+                                        source="password"
+                                        disabled
+                                        fullWidth
+                                    />
+                                </Box>
+                                <Box flex={1} ml={{ xs: 0, sm: '0.5em' }}>
+                                    <OpenAccount />
+                                </Box>
+                            </Box>
 
                             <Box mt="1em" />
 

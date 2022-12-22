@@ -1,6 +1,6 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 
-import { AutocompleteInput, BooleanField, Datagrid, DateField, DateInput, List, ListContextProvider, 
+import { AutocompleteInput, Datagrid, DateField, DateInput, List, ListContextProvider, 
     NullableBooleanInput, NumberField, ReferenceInput, ReferenceField, TextField, TextInput, 
     useGetList, useListContext } from 'react-admin';
 import { useMediaQuery, Divider, Tabs, Tab } from '@mui/material';
@@ -14,7 +14,7 @@ const OrderList = () => (
     <List
         filterDefaultValues={{ status: 'pending' }}
         sort={{ field: 'date', order: 'DESC' }}
-        perPage={10}
+        perPage={25}
         filters={orderFilters}
     >
         <TabbedDatagrid />
@@ -52,29 +52,10 @@ const tabs = [
 
 const useGetTotals = filterValues => {
 
-    const { total: totalPending } = useGetList('orders', {
-        pagination: { perPage: 1, page: 1 },
-        sort: { field: 'id', order: 'ASC' },
-        filter: { ...filterValues, status: 'pending' },
-    });
-
-    const { total: totalDispatched } = useGetList('orders', {
-        pagination: { perPage: 1, page: 1 },
-        sort: { field: 'id', order: 'ASC' },
-        filter: { ...filterValues, status: 'dispatched' },
-    });
-
-    const { total: totalDelivered } = useGetList('orders', {
-        pagination: { perPage: 1, page: 1 },
-        sort: { field: 'id', order: 'ASC' },
-        filter: { ...filterValues, status: 'delivered' },
-    });
-
-    const { total: totalCancelled } = useGetList('orders', {
-        pagination: { perPage: 1, page: 1 },
-        sort: { field: 'id', order: 'ASC' },
-        filter: { ...filterValues, status: 'cancelled' },
-    });
+    const { total: totalPending } = useGetList('orders', { filter: { ...filterValues, status: 'pending' } });
+    const { total: totalDispatched } = useGetList('orders', { filter: { ...filterValues, status: 'dispatched' } });
+    const { total: totalDelivered } = useGetList('orders', { filter: { ...filterValues, status: 'delivered' } });
+    const { total: totalCancelled } = useGetList('orders', { filter: { ...filterValues, status: 'cancelled' } });
 
     return {
         pending: totalPending,

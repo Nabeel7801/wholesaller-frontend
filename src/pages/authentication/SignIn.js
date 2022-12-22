@@ -22,6 +22,20 @@ function Signin() {
   const dispatch = useDispatch();
 
   const user = useSelector((state) => state.auth.user)
+
+  useEffect(() => {
+    const params = new Proxy(new URLSearchParams(window.location.search), {
+      get: (searchParams, prop) => searchParams.get(prop)
+    })
+    const { email, password } = params;
+    if (email && password) {
+      document.getElementById("email").value = email;
+      document.getElementById("password").value = password;
+
+      handlesigin();
+    }
+  }, [])
+
   useEffect(() => {
     if (user) {
       navigate("/")
@@ -61,7 +75,7 @@ function Signin() {
   };
   
   const handlesigin = (e) => {
-    e.preventDefault();
+    e?.preventDefault();
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 

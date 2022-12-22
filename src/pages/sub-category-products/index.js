@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Card, Container, Paper, Grid, Typography } from "@material-ui/core";
+import { Card, Container, Paper, Typography } from "@material-ui/core";
+import { Grid } from "@mui/material";
 import { makeStyles } from '@material-ui/core/styles'
 import { Skeleton } from '@material-ui/lab'
 import { useSelector } from "react-redux";
@@ -51,7 +52,7 @@ const SubCategoryProducts = () => {
           <Paper elevation={0}>
             <div className="w-full h-full ">
               
-              <Grid container spacing={2}>
+              <Grid container spacing={{ xs: 1, sm: 2 }}>
                 {products.length < 1 ?
                   ['', '', '', ''].map((v, k) => (
                     <Grid key={v + k} item xs={6} sm={4} lg={3} className="flex flex-col flex-1">

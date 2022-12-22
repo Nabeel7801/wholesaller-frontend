@@ -6,7 +6,6 @@ import CustomerEdit from './CustomerEdit';
 
 const customers = {
     list: CustomerList,
-    create: CustomerCreate,
     edit: CustomerEdit,
     icon: CustomerIcon,
 };

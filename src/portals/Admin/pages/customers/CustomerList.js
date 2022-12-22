@@ -22,7 +22,6 @@ const CustomerList = () => {
     return (
         <List
             filters={isSmall ? visitorFilters : undefined}
-            sort={{ field: 'last_seen', order: 'DESC' }}
             perPage={25}
         >
             {isXsmall ? (

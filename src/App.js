@@ -37,8 +37,8 @@ function App() {
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.user)
 
-  //window["apiLocation"] = "https://wholesaller.com/api";
-  window["apiLocation"] = "http://localhost:5000/api";
+  window["apiLocation"] = "https://wholesaller.com/api";
+  //window["apiLocation"] = "http://localhost:5000/api";
   //window["apiLocation"] = "http://192.168.0.107:5000/api";
 
   useEffect(() => {
